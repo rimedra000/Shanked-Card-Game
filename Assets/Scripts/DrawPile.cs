@@ -1,4 +1,6 @@
 using System.Collections.Generic;
+using System.Linq;
+using NUnit.Framework;
 using UnityEngine;
 using Random=UnityEngine.Random;
 
@@ -6,6 +8,7 @@ public class DrawPile : MonoBehaviour
 {
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     private List<Card> cards = new();
+    public int cardsRemaining => cards.Count;
     [SerializeField] private GameObject cardPrefab;
     
 
@@ -49,14 +52,7 @@ public class DrawPile : MonoBehaviour
             a[i]=i;
         }
         a = Shuffle(a);
-        foreach (var item in a)
-        {
-            var card = Instantiate(cardPrefab,transform).GetComponent<Card>();
-            cards.Insert(0,card);
-            card.cardId=item;
-            card.UpdateCardVisuals();
-
-        }
+        cards=Card.InstantiateCardsFromData(a.ToList(),transform,cardPrefab);
         
     }
 

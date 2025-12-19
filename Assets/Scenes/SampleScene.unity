@@ -239,6 +239,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cards: []
+  cardPrefab: {fileID: 0}
 --- !u!224 &276384791 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 4769973752016772597, guid: d115042f7f70d2bdb97d3fa49a30a006, type: 3}
@@ -760,6 +761,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cards: []
+  cardPrefab: {fileID: 5063390011317731493, guid: d0a5350104c104bd1967d7add8043436, type: 3}
 --- !u!1 &2014570520
 GameObject:
   m_ObjectHideFlags: 0
@@ -810,7 +812,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cards: []
   selectOffset: {x: -1, y: 0, z: 0}
-  discardPile: {fileID: 1823742575}
 --- !u!1001 &3815657386964622804
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -30,16 +30,10 @@ public class DiscardPile : MonoBehaviour
 
    
 
-    public void ReceiveCards(List<Card> cardsReceived)
+    public void ReceiveCards(List<int> cardsReceived)
     {
         
-        foreach (Card card in cardsReceived)
-        {
-            if (cards.Contains(card)) continue;
-            card.transform.SetParent(transform);
-            card.transform.localPosition = Vector3.zero;
-            cards.Add(card);
-        }
+        cards.AddRange(Card.InstantiateCardsFromData(cardsReceived,transform,cardPrefab));
 
 
     }

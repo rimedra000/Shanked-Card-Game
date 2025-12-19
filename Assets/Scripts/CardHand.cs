@@ -184,7 +184,7 @@ public class CardHand : MonoBehaviour
 
                 if (playPile.ValidPlay(card.cardValue))
                 {
-                    playPile.Play(new List<Card>{card});    
+                    playPile.ReceivePlay(new List<Card>{card});    
                 }
                 else//unreachable path
                 {
@@ -249,7 +249,7 @@ public class CardHand : MonoBehaviour
             
             
         }
-        playPile.Play(selectedCards);
+        playPile.ReceivePlay(selectedCards);
         selectedCards.Clear();
         SortCards();
         

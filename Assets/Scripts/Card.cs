@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -52,6 +53,38 @@ public class Card : MonoBehaviour
         
         
     }
+
+    public static List<int> TransformCardsToData(List<Card> cards)
+    {
+        List<int> result=new();
+        result.Capacity=cards.Count;
+        for (int i = 0; i < cards.Count; i++)
+        {
+            result.Add(cards[i].cardId);
+            Destroy(cards[i].gameObject);
+        }
+        return result;
+    }
+
+    public static List<Card> InstantiateCardsFromData(List<int> data,Transform parentTransform,GameObject cardPrefab)
+    {
+        List<Card> result=new();
+        result.Capacity=data.Count;
+        
+        foreach (int cardValue in data)
+        {
+            //if (cards.Contains(card)) continue;
+            Card card =Instantiate(cardPrefab,parentTransform).GetComponent<Card>();
+            card.cardId=cardValue;
+            card.UpdateCardVisuals();
+            //card.transform.SetParent(transform);
+            //card.transform.localPosition = Vector3.zero;
+            result.Add(card);
+        }
+        return result;
+        
+    }
+
 
 
     public static (Value, Suit, Deck) IdToEnums(int id)

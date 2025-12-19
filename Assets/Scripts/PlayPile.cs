@@ -10,7 +10,7 @@ public class PlayPile : MonoBehaviour
 
     [SerializeField] private Vector3 selectOffset;
 
-    [SerializeField] private DiscardPile discardPile;
+    private DiscardPile discardPile;
 
     public static PlayPile instance;
 
@@ -22,13 +22,14 @@ public class PlayPile : MonoBehaviour
     private void Awake() {
         instance=this;
         cardHands=FindObjectsByType<CardHand>(FindObjectsSortMode.None);
+        discardPile=DiscardPile.instance;
     }
 
     private void Start()
     {
         cardHands[cardHandIndex].StartTurn();
     }
-    public void Play(List<Card> cardsReceived)
+    public void ReceivePlay(List<Card> cardsReceived)
     {
         foreach (Card card in cardsReceived)
         {
@@ -44,7 +45,8 @@ public class PlayPile : MonoBehaviour
         if (FourMatch())
         {
             Debug.Log("4 match Played");
-            discardPile.ReceiveCards(cards);
+            discardPile.ReceiveCards(Card.TransformCardsToData(cards));
+            
             cards.Clear();
             cardHandIndex--;
         }
@@ -52,7 +54,7 @@ public class PlayPile : MonoBehaviour
         if (CardValue() == Value.Ten)
         {
             Debug.Log("ten Played");
-            discardPile.ReceiveCards(cards);
+            discardPile.ReceiveCards(Card.TransformCardsToData(cards));
             cards.Clear();
             cardHandIndex--;
         }
@@ -70,8 +72,10 @@ public class PlayPile : MonoBehaviour
         while (CardValue() == Value.Joker)
         {
             Debug.Log("joker Played");
-            discardPile.ReceiveCards(new List<Card>{cards[0]});
+            discardPile.ReceiveCards(new List<int>{cards[0].cardId});
+            Destroy(cards[0].gameObject);
             cards.RemoveAt(0);
+            
             //rotate hands
             List<Card> tempCards=cardHands[^1].SwapHand(new List<Card>());
             for (int i = 0; i < cardHands.Length; i++)
