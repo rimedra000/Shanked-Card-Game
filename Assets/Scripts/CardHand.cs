@@ -15,10 +15,10 @@ public class CardHand : MonoBehaviour
     private DrawPile drawPile;
     private bool isTurn=false;
 
-    private bool hasEmptyHand=> hand.Count<=0;
-    private bool hiddenCardsStage => shownCards[0]==null&&shownCards[1]==null&&shownCards[2]==null;
+    //private bool hasEmptyHand=> hand.Count<=0;
+    //private bool hiddenCardsStage => shownCards[0]==null&&shownCards[1]==null&&shownCards[2]==null;
 
-    private bool inSetup=true;
+    //private bool inSetup=true;
     private Card setupCardSwapCard;
     [SerializeField] private GameObject cardPrefab;
 
@@ -26,6 +26,9 @@ public class CardHand : MonoBehaviour
     [SerializeField] private Transform shownCardsParent;
     [SerializeField] private Transform hiddenCardsParent;
 
+    private HandStage handStage=HandStage.Setup;
+
+    
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -61,20 +64,28 @@ public class CardHand : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
-    {
+    // void Update()
+    // {
 
+    // }
+
+    private enum HandStage
+    {
+        Setup,
+        MainHand,
+        ShownCards,
+        HiddenCards,
+        Won,
     }
 
     public void StartTurn()
     {
-        
-        
         isTurn=true;
         //bool canPlay=false;
-        if (!hasEmptyHand)//if has cards in hand
+        //TODO: Fix bug at start where hand is not checked to be playable
+        if (handStage==HandStage.MainHand)//if has cards in hand
         {
-            foreach (var card in hand)
+            foreach (Card card in hand)
             {
                 if (playPile.ValidPlay(card.cardValue))
                 {
@@ -85,11 +96,9 @@ public class CardHand : MonoBehaviour
             ReceiveCards(playPile.Shank());
             return;
         }
-        else
+        else if (handStage==HandStage.ShownCards)
         {
-            if (hiddenCardsStage) return;
-            
-            foreach (var card in shownCards)
+            foreach (Card card in shownCards)
             {
                 if (card == null) continue;
                 if (playPile.ValidPlay(card.cardValue))
@@ -104,14 +113,41 @@ public class CardHand : MonoBehaviour
         }
     }
 
+
+    private void UpdateHandStage()
+    {
+        if (handStage==HandStage.Setup)
+        {
+            return;
+        }
+        if(hand.Count>0)
+        {
+            handStage=HandStage.MainHand;
+        }
+        else if (!(IsEmpty(shownCards)))
+        {
+            handStage= HandStage.ShownCards;
+        }
+        else if (!(IsEmpty(hiddenCards)))
+        {
+            handStage=HandStage.HiddenCards;
+        }
+        else
+        {
+            handStage=HandStage.Won;
+            Debug.Log("win");
+        }
+        
+    }
+
     public void SelectCard(Card card)
     {
         bool fromMainHand=hand.Contains(card);
         bool fromHiddenCards=hiddenCards.Contains(card);
         bool fromShownCards=shownCards.Contains(card);
         
-        if (inSetup&&(fromMainHand||fromShownCards))
-        {
+        if (handStage==HandStage.Setup&&(fromMainHand||fromShownCards))
+        {//setup
             if (setupCardSwapCard==null)
             {
                 setupCardSwapCard=card;
@@ -125,11 +161,9 @@ public class CardHand : MonoBehaviour
             }
             else
             {
-                var temp =setupCardSwapCard.cardId;
+                int tempId =setupCardSwapCard.cardId;
                 setupCardSwapCard.SetCardId(card.cardId);
-                card.SetCardId(temp);
-                //card.UpdateCardVisuals();
-                //setupCardSwapCard.UpdateCardVisuals();
+                card.SetCardId(tempId);
                 setupCardSwapCard.transform.Translate(0,-1,0);
                 setupCardSwapCard=null;
                 SortCards();
@@ -141,41 +175,25 @@ public class CardHand : MonoBehaviour
         }
         if (!isTurn)return;
         if (!playPile.ValidPlay(card.cardValue)&&!fromHiddenCards) return;
-        int currentSection;
-        if (hand.Count>0&&fromMainHand)
-        {
-            currentSection=0;
-        }
-        
-        else if(hand.Count==0&&!hiddenCardsStage&&fromShownCards)
-        {
-            currentSection=1;
-        }
-        else if(hand.Count==0&&hiddenCardsStage&&fromHiddenCards)
-        {
-            currentSection=2;
-        }
-        else
-        {
+        if ((handStage != HandStage.MainHand || !fromMainHand) && (handStage != HandStage.ShownCards || !fromShownCards) && (handStage != HandStage.HiddenCards || !fromHiddenCards))
+        {//if card not valid for current stage return
             return;
         }
 
-        
-        if (selectedCards.Contains(card))
+
+        if (selectedCards.Contains(card))//unselect card
         {
             selectedCards.Remove(card);
             card.transform.Translate(0, -1, 0);
         }
-        else if (currentSection!=0&&selectedCards.Count==0)//if main hand empty and no cards selected
+        else if (handStage!=HandStage.MainHand&&selectedCards.Count==0)//if main hand empty and no cards selected
         {            
-            if (currentSection==1)//if in shown cards
+            if (handStage==HandStage.ShownCards)//if in shown cards
             {
-                
-
                 selectedCards.Add(card);
                 card.transform.Translate(0, 1, 0);
             }
-            else if (currentSection==2)
+            else if (handStage==HandStage.HiddenCards)
             {
                 //if (!hiddenCardsStage)return;
                 
@@ -187,8 +205,9 @@ public class CardHand : MonoBehaviour
                 if (playPile.ValidPlay(card.cardValue))
                 {
                     playPile.ReceivePlay(Card.TransformCardsToData(new List<Card>{card}));    
+                    UpdateHandStage();
                 }
-                else//unreachable path
+                else
                 {
                     card.transform.SetParent(handParent,false);
                     hand.Add(card);
@@ -226,15 +245,16 @@ public class CardHand : MonoBehaviour
     {
         hand.AddRange(Card.InstantiateCardsFromData(cardsReceived,handParent,cardPrefab));
         SortCards();
+        UpdateHandStage();
     }
 
    
 
     public void PlaySelectedCards()
     {
-        if (inSetup)
+        if (handStage==HandStage.Setup)
         {
-            inSetup=false;
+            handStage=HandStage.MainHand;
             return;
         }
         if (!isTurn) return;
@@ -261,7 +281,7 @@ public class CardHand : MonoBehaviour
         playPile.ReceivePlay(Card.TransformCardsToData(selectedCards));
         selectedCards.Clear();
         SortCards();
-        
+        UpdateHandStage();
     }
 
     private void SortCards()
@@ -289,5 +309,13 @@ public class CardHand : MonoBehaviour
         return temp;
     }
     
+    private bool IsEmpty(Array array)
+    {
+        foreach (var item in array)
+        {
+            if (item!=null) return true;
+        }
+        return false;
+    }
     
 }

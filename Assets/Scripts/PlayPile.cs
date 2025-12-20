@@ -7,7 +7,7 @@ public class PlayPile : MonoBehaviour
 
     [SerializeField] private List<Card> cards = new();
     [SerializeField] private GameObject cardPrefab;
-    private List<Card> selectedCards = new();
+    //private List<Card> selectedCards = new();
 
     [SerializeField] private Vector3 selectOffset;
 

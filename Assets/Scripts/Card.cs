@@ -34,9 +34,7 @@ public class Card : MonoBehaviour
     {
         if (faceUp||cardValue==Value.Blank)
         {
-            
-            Value value= IdToEnums(cardId).Item1;
-            string name = ValueToString(value);
+            string name = ValueToString(cardValue);
             gameObject.name = name;
 
             Sprite cardSprite = Resources.Load<Sprite>("Card Art/Front/Hearts/" + name);
