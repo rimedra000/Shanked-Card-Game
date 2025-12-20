@@ -371,6 +371,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 92cd56c2fcbdc54e49fbf1b4928352f6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  cardPrefab: {fileID: 5063390011317731493, guid: d0a5350104c104bd1967d7add8043436, type: 3}
   handParent: {fileID: 6905828308730440870}
   shownCardsParent: {fileID: 1530957677449776021}
   hiddenCardsParent: {fileID: 8618450952776423243}

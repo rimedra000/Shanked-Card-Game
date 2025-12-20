@@ -6,6 +6,7 @@ public class PlayPile : MonoBehaviour
 {
 
     [SerializeField] private List<Card> cards = new();
+    [SerializeField] private GameObject cardPrefab;
     private List<Card> selectedCards = new();
 
     [SerializeField] private Vector3 selectOffset;
@@ -29,16 +30,17 @@ public class PlayPile : MonoBehaviour
     {
         cardHands[cardHandIndex].StartTurn();
     }
-    public void ReceivePlay(List<Card> cardsReceived)
+    public void ReceivePlay(List<int> cardsReceived)
     {
-        foreach (Card card in cardsReceived)
-        {
-            if (cards.Contains(card)) continue;
-            card.transform.SetParent(transform);
-            card.transform.localPosition = Vector3.zero;
-            //card.transform.SetSiblingIndex(0);
-            cards.Insert(0, card);
-        }
+        cards.InsertRange(0,Card.InstantiateCardsFromData(cardsReceived,transform,cardPrefab));
+        // foreach (Card card in cardsReceived)
+        // {
+        //     if (cards.Contains(card)) continue;
+        //     card.transform.SetParent(transform);
+        //     card.transform.localPosition = Vector3.zero;
+        //     //card.transform.SetSiblingIndex(0);
+        //     cards.Insert(0, card);
+        // }
 
 
 
@@ -59,10 +61,10 @@ public class PlayPile : MonoBehaviour
             cardHandIndex--;
         }
 
-        if (cardsReceived[0].cardValue==Value.Jack)
+        if (Card.IdToEnums(cardsReceived[0]).Item1==Value.Jack)
         {
             int jackCount =1;
-            while (jackCount<cardsReceived.Count&&cardsReceived[jackCount].cardValue==Value.Jack)
+            while (jackCount<cardsReceived.Count&&Card.IdToEnums(cardsReceived[jackCount]).Item1==Value.Jack)
             {
                 jackCount++;
             }
@@ -139,14 +141,14 @@ public class PlayPile : MonoBehaviour
     //     }
     // }
 
-    public void Shank(CardHand cardHand)
+    public List<int> Shank()
     {
-        cardHand.ReceiveCards(cards);
+        List<int> data = Card.TransformCardsToData(cards);
         cards.Clear();
         cardHandIndex++;
         cardHandIndex%=cardHands.Length;
         cardHands[cardHandIndex].StartTurn();
-        
+        return data;
     }
 
 

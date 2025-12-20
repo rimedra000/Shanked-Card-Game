@@ -33,7 +33,7 @@ public class DiscardPile : MonoBehaviour
     public void ReceiveCards(List<int> cardsReceived)
     {
         
-        cards.AddRange(Card.InstantiateCardsFromData(cardsReceived,transform,cardPrefab));
+        cards.InsertRange(0,Card.InstantiateCardsFromData(cardsReceived,transform,cardPrefab));
 
 
     }

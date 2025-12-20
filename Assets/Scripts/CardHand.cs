@@ -20,6 +20,7 @@ public class CardHand : MonoBehaviour
 
     private bool inSetup=true;
     private Card setupCardSwapCard;
+    [SerializeField] private GameObject cardPrefab;
 
     [SerializeField] private Transform handParent;
     [SerializeField] private Transform shownCardsParent;
@@ -51,7 +52,8 @@ public class CardHand : MonoBehaviour
             card.transform.localPosition=Vector3.zero;
         }
         
-        drawPile.DrawCards(3,this);
+        ReceiveCards(drawPile.DrawCards(3));
+        
         
 
         SortCards();
@@ -80,7 +82,7 @@ public class CardHand : MonoBehaviour
                 }
             }
             isTurn=false;
-            playPile.Shank(this);
+            ReceiveCards(playPile.Shank());
             return;
         }
         else
@@ -95,7 +97,7 @@ public class CardHand : MonoBehaviour
                     return;
                 }
                 isTurn = false;
-                playPile.Shank(this);
+                ReceiveCards(playPile.Shank());
                 return;
             }
 
@@ -124,10 +126,10 @@ public class CardHand : MonoBehaviour
             else
             {
                 var temp =setupCardSwapCard.cardId;
-                setupCardSwapCard.cardId=card.cardId;
-                card.cardId=temp;
-                card.UpdateCardVisuals();
-                setupCardSwapCard.UpdateCardVisuals();
+                setupCardSwapCard.SetCardId(card.cardId);
+                card.SetCardId(temp);
+                //card.UpdateCardVisuals();
+                //setupCardSwapCard.UpdateCardVisuals();
                 setupCardSwapCard.transform.Translate(0,-1,0);
                 setupCardSwapCard=null;
                 SortCards();
@@ -184,13 +186,13 @@ public class CardHand : MonoBehaviour
 
                 if (playPile.ValidPlay(card.cardValue))
                 {
-                    playPile.ReceivePlay(new List<Card>{card});    
+                    playPile.ReceivePlay(Card.TransformCardsToData(new List<Card>{card}));    
                 }
                 else//unreachable path
                 {
                     card.transform.SetParent(handParent,false);
                     hand.Add(card);
-                    playPile.Shank(this);
+                    ReceiveCards(playPile.Shank());
                 }
                 
                 
@@ -206,17 +208,24 @@ public class CardHand : MonoBehaviour
 
 
 
-    public void ReceiveCards(List<Card> cardsReceived,bool sortCards=true)
+    // public void ReceiveCards(List<Card> cardsReceived)
+    // {
+    //     foreach (Card card in cardsReceived)
+    //     {
+    //         card.transform.SetParent(handParent,false);
+    //         card.faceUp=true;
+    //         card.UpdateCardVisuals();
+    //         if (hand.Contains(card)) continue;
+    //         hand.Add(card);
+    //     }
+    //     SortCards(); 
+    // }
+
+
+    public void ReceiveCards(List<int> cardsReceived)
     {
-        foreach (Card card in cardsReceived)
-        {
-            card.transform.SetParent(handParent,false);
-            card.faceUp=true;
-            card.UpdateCardVisuals();
-            if (hand.Contains(card)) continue;
-            hand.Add(card);
-        }
-        if (sortCards) SortCards(); 
+        hand.AddRange(Card.InstantiateCardsFromData(cardsReceived,handParent,cardPrefab));
+        SortCards();
     }
 
    
@@ -230,7 +239,7 @@ public class CardHand : MonoBehaviour
         }
         if (!isTurn) return;
         if (selectedCards.Count<=0)return;
-        drawPile.DrawCards(3-hand.Count+selectedCards.Count,this);
+        ReceiveCards(drawPile.DrawCards(3-hand.Count+selectedCards.Count));
         isTurn=false;
         foreach (Card card in selectedCards)
         {
@@ -249,7 +258,7 @@ public class CardHand : MonoBehaviour
             
             
         }
-        playPile.ReceivePlay(selectedCards);
+        playPile.ReceivePlay(Card.TransformCardsToData(selectedCards));
         selectedCards.Clear();
         SortCards();
         

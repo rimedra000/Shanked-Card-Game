@@ -695,6 +695,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7268352789635619629, guid: d115042f7f70d2bdb97d3fa49a30a006, type: 3}
+      propertyPath: cardPrefab
+      value: 
+      objectReference: {fileID: 5063390011317731493, guid: d0a5350104c104bd1967d7add8043436, type: 3}
     - target: {fileID: 8516257705013135714, guid: d115042f7f70d2bdb97d3fa49a30a006, type: 3}
       propertyPath: m_AnchoredPosition.x
       value: 1315
@@ -811,6 +815,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cards: []
+  cardPrefab: {fileID: 5063390011317731493, guid: d0a5350104c104bd1967d7add8043436, type: 3}
   selectOffset: {x: -1, y: 0, z: 0}
 --- !u!1001 &3815657386964622804
 PrefabInstance:

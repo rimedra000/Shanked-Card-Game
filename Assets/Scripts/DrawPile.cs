@@ -1,8 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
-using NUnit.Framework;
 using UnityEngine;
-using Random=UnityEngine.Random;
+using Random = UnityEngine.Random;
 
 public class DrawPile : MonoBehaviour
 {
@@ -33,15 +32,15 @@ public class DrawPile : MonoBehaviour
         return card;        
     }
 
-    public void DrawCards(int num,CardHand cardHand)
+    public List<int> DrawCards(int num)
     {
-        if(num<=0||IsEmpty())return;
+        if(num<=0||IsEmpty())return new();
         List<Card> drawCards =new();
         for (int i = 0; i < num&&!IsEmpty(); i++)
         {
             drawCards.Add(DrawCard());
         }
-        cardHand.ReceiveCards(drawCards);
+        return Card.TransformCardsToData(drawCards);
     }
 
     private void SetupPile()
@@ -53,6 +52,11 @@ public class DrawPile : MonoBehaviour
         }
         a = Shuffle(a);
         cards=Card.InstantiateCardsFromData(a.ToList(),transform,cardPrefab);
+        foreach (Card card in cards)
+        {
+            card.faceUp=false;
+            card.UpdateCardVisuals();
+        }
         
     }
 

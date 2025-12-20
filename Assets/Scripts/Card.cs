@@ -6,7 +6,7 @@ using UnityEngine.UI;
 
 public class Card : MonoBehaviour
 {
-    [Range(0,107)]public int cardId;
+    [Range(0,107)]public int cardId{get; private set;}
     public Value cardValue => IdToEnums(cardId).Item1;
     public Image cardImage;
     public bool faceUp=true;
@@ -19,10 +19,7 @@ public class Card : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
-    {
-
-    }
+ 
     void OnMouseDown()
     {
         SendMessageUpwards(nameof(CardHand.SelectCard), this);
@@ -35,10 +32,10 @@ public class Card : MonoBehaviour
 
     public void UpdateCardVisuals()
     {
-        if (faceUp)
+        if (faceUp||cardValue==Value.Blank)
         {
             
-            (Value value, _, _) = IdToEnums(cardId);
+            Value value= IdToEnums(cardId).Item1;
             string name = ValueToString(value);
             gameObject.name = name;
 
@@ -52,6 +49,12 @@ public class Card : MonoBehaviour
         
         
         
+    }
+
+    public void SetCardId(int id)
+    {
+        cardId=id;
+        UpdateCardVisuals();
     }
 
     public static List<int> TransformCardsToData(List<Card> cards)
@@ -75,8 +78,8 @@ public class Card : MonoBehaviour
         {
             //if (cards.Contains(card)) continue;
             Card card =Instantiate(cardPrefab,parentTransform).GetComponent<Card>();
-            card.cardId=cardValue;
-            card.UpdateCardVisuals();
+            card.SetCardId(cardValue);
+            //card.UpdateCardVisuals();
             //card.transform.SetParent(transform);
             //card.transform.localPosition = Vector3.zero;
             result.Add(card);
