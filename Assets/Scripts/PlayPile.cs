@@ -16,6 +16,7 @@ public class PlayPile : MonoBehaviour
     public static PlayPile instance;
 
     private CardHand[] cardHands;
+    private bool[] a;
 
     
     private int cardHandIndex=0;
