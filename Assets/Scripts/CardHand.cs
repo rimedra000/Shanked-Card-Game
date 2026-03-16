@@ -63,11 +63,6 @@ public class CardHand : MonoBehaviour
 
     }
 
-    // Update is called once per frame
-    // void Update()
-    // {
-
-    // }
 
     private enum HandStage
     {
@@ -124,11 +119,11 @@ public class CardHand : MonoBehaviour
         {
             handStage=HandStage.MainHand;
         }
-        else if (!(IsEmpty(shownCards)))
+        else if (!IsEmpty(shownCards))
         {
             handStage= HandStage.ShownCards;
         }
-        else if (!(IsEmpty(hiddenCards)))
+        else if (!IsEmpty(hiddenCards))
         {
             handStage=HandStage.HiddenCards;
         }

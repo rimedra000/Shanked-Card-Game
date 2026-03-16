@@ -105,6 +105,20 @@ public class Card : MonoBehaviour
         return ((Value)val, (Suit)suit, (Deck)deck);
     }
 
+    public static Value IdToValue(int id)
+    {
+        if (id>=108||id<0)
+        {
+            throw new ArgumentOutOfRangeException();
+        }
+        if (id >= 104)
+        {
+            return Value.Joker;
+        }
+        int val = id % CardsInSuit;
+        return (Value)val;
+    }
+
     public static int EnumsToId(Value value, Suit suit, Deck deck)
     {
         if (value == Value.Joker)

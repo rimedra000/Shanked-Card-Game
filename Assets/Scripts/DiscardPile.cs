@@ -23,13 +23,6 @@ public class DiscardPile : MonoBehaviour
     
     public void SelectCard(Card card)
     {}
-    
-
-    
-
-
-   
-
     public void ReceiveCards(List<int> cardsReceived)
     {
         

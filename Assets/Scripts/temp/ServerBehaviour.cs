@@ -10,6 +10,7 @@ public class ServerBehaviour : MonoBehaviour
 
     void Start()
     {
+        Debug.Log("Server start.");
         m_Driver = NetworkDriver.Create(new WebSocketNetworkInterface());
         m_Connections = new NativeList<NetworkConnection>(16, Allocator.Persistent);
 

@@ -31,8 +31,16 @@ public class PlayPile : MonoBehaviour
     {
         cardHands[cardHandIndex].StartTurn();
     }
-    public void ReceivePlay(List<int> cardsReceived)
+    public bool ReceivePlay(List<int> cardsReceived)
     {
+        foreach (int card in cardsReceived)
+        {
+            if(Card.IdToValue(card) != Card.IdToValue(cardsReceived[0])) return false;
+        }
+
+        if(!ValidPlay(Card.IdToValue(cardsReceived[0]))) return false;
+
+
         cards.InsertRange(0,Card.InstantiateCardsFromData(cardsReceived,transform,cardPrefab));
         // foreach (Card card in cardsReceived)
         // {
@@ -90,7 +98,7 @@ public class PlayPile : MonoBehaviour
         cardHandIndex++;
         cardHandIndex%=cardHands.Length;
         cardHands[cardHandIndex].StartTurn();
-        
+        return true;        
     }
 
     private bool FourMatch()

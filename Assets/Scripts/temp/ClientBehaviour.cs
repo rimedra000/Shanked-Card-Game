@@ -8,6 +8,7 @@ public class ClientBehaviour : MonoBehaviour
 
     void Start()
     {
+        Debug.Log("Client start.");
         m_Driver = NetworkDriver.Create(new WebSocketNetworkInterface());
         var endpoint = NetworkEndpoint.LoopbackIpv4.WithPort(7777);
         m_Connection = m_Driver.Connect(endpoint);
@@ -35,7 +36,7 @@ public class ClientBehaviour : MonoBehaviour
             {
                 Debug.Log("We are now connected to the server.");
 
-                uint value = 1;
+                uint value = 3;
                 m_Driver.BeginSend(m_Connection, out var writer);
                 writer.WriteUInt(value);
                 m_Driver.EndSend(writer);
@@ -44,8 +45,8 @@ public class ClientBehaviour : MonoBehaviour
             {
                 uint value = stream.ReadUInt();
                 Debug.Log($"Got the value {value} back from the server.");
-                m_Connection.Disconnect(m_Driver);
-                m_Connection = default;
+                //m_Connection.Disconnect(m_Driver);
+                //m_Connection = default;
             }
             else if (cmd == NetworkEvent.Type.Disconnect)
             {
