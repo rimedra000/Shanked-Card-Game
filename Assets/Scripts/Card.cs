@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-
 public class Card : MonoBehaviour
 {
     [Range(0,107)]public int cardId{get; private set;}
@@ -17,7 +16,6 @@ public class Card : MonoBehaviour
     {
         UpdateCardVisuals();
     }
-
     // Update is called once per frame
  
     void OnMouseDown()
@@ -34,7 +32,7 @@ public class Card : MonoBehaviour
     {
         if (faceUp||cardValue==Value.Blank)
         {
-            string name = ValueToString(cardValue);
+            string name = cardValue.ToString();
             gameObject.name = name;
 
             Sprite cardSprite = Resources.Load<Sprite>("Card Art/Front/Hearts/" + name);
@@ -86,8 +84,6 @@ public class Card : MonoBehaviour
         
     }
 
-
-
     public static (Value, Suit, Deck) IdToEnums(int id)
     {
         if (id>=108||id<0)
@@ -131,29 +127,6 @@ public class Card : MonoBehaviour
 
     
 
-    public static string ValueToString(Value value)
-    {
-        return value switch
-        {
-            Value.Ace => "Ace",
-            Value.Two => "2",
-            Value.Three => "3",
-            Value.Four => "4",
-            Value.Five => "5",
-            Value.Six => "6",
-            Value.Seven => "7",
-            Value.Eight => "8",
-            Value.Nine => "9",
-            Value.Ten => "10",
-            Value.Jack => "Jack",
-            Value.Queen => "Queen",
-            Value.King => "King",
-            Value.Joker => "Joker",
-            Value.Blank => "Blank",
-            _ => throw new NotImplementedException()
-        };
-    }
-
     public enum Value
     {
         Two,
@@ -184,17 +157,6 @@ public class Card : MonoBehaviour
 
     }
 
-    public static string SuitToString(Suit suit)
-    {
-        return suit switch
-        {
-            Suit.Clubs => "Clubs",
-            Suit.Diamonds => "Diamonds",
-            Suit.Hearts => "Hearts",
-            Suit.Spades => "Spades",
-            _ => throw new NotImplementedException()
-        };
-    }
     public enum Deck
     {
         One,
@@ -207,6 +169,4 @@ public class Card : MonoBehaviour
     }
 
     
-
-
 }

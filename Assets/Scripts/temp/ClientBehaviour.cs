@@ -1,15 +1,20 @@
 using UnityEngine;
 using Unity.Networking.Transport;
+using Unity.Collections;
+using System.Linq;
 
 public class ClientBehaviour : MonoBehaviour
 {
     NetworkDriver m_Driver;
     NetworkConnection m_Connection;
 
+    NetworkPipeline m_Pipeline;
+
     void Start()
     {
         Debug.Log("Client start.");
         m_Driver = NetworkDriver.Create(new WebSocketNetworkInterface());
+        m_Pipeline = m_Driver.CreatePipeline(typeof(ReliableSequencedPipelineStage));
         var endpoint = NetworkEndpoint.LoopbackIpv4.WithPort(7777);
         m_Connection = m_Driver.Connect(endpoint);
     }
@@ -28,23 +33,28 @@ public class ClientBehaviour : MonoBehaviour
             return;
         }
 
-        Unity.Collections.DataStreamReader stream;
+        DataStreamReader stream;
         NetworkEvent.Type cmd;
         while ((cmd = m_Connection.PopEvent(m_Driver, out stream)) != NetworkEvent.Type.Empty)
         {
             if (cmd == NetworkEvent.Type.Connect)
             {
                 Debug.Log("We are now connected to the server.");
-
-                uint value = 3;
-                m_Driver.BeginSend(m_Connection, out var writer);
-                writer.WriteUInt(value);
+                CardValue[] cards = {CardValue.Ace,CardValue.Two,CardValue.Three,CardValue.Four,CardValue.Five,CardValue.Six,CardValue.Seven,CardValue.Eight,CardValue.Nine,CardValue.Ten,CardValue.Jack,CardValue.Queen,CardValue.King,CardValue.Joker};
+                var bytes =new NativeArray<byte>(cards.Select(c=>(byte)c).ToArray(),Allocator.Temp);
+                m_Driver.BeginSend(m_Pipeline,m_Connection, out var writer);
+                writer.WriteBytes(bytes);
                 m_Driver.EndSend(writer);
+                bytes.Dispose();
             }
             else if (cmd == NetworkEvent.Type.Data)
             {
-                uint value = stream.ReadUInt();
-                Debug.Log($"Got the value {value} back from the server.");
+                while (stream.Length>stream.GetBytesRead())
+                {
+                    Debug.Log($"Got the value {(CardStruct)stream.ReadByte()} back from the server.");    
+                }
+             
+
                 //m_Connection.Disconnect(m_Driver);
                 //m_Connection = default;
             }
