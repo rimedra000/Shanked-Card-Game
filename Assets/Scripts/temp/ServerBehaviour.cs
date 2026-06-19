@@ -2,6 +2,8 @@ using UnityEngine;
 using Unity.Collections;
 using Unity.Networking.Transport;
 using System.Linq;
+using System.Collections.Generic;
+using NetworkData;
 
 public class ServerBehaviour : MonoBehaviour
 {
@@ -10,12 +12,16 @@ public class ServerBehaviour : MonoBehaviour
     NativeList<NetworkConnection> m_Connections;
     NetworkPipeline m_Pipeline;
 
+    ServerSimulation serverSimulation;
+
+    List<Data> dataHistory=new();
+
     void Start()
     {
         Debug.Log("Server start.");
         m_Driver = NetworkDriver.Create(new WebSocketNetworkInterface());
         m_Pipeline = m_Driver.CreatePipeline(typeof(ReliableSequencedPipelineStage));
-        m_Connections = new NativeList<NetworkConnection>(16, Allocator.Persistent);
+        m_Connections = new NativeList<NetworkConnection>(8, Allocator.Persistent);
 
         var endpoint = NetworkEndpoint.LoopbackIpv4.WithPort(7777);
         if (m_Driver.Bind(endpoint) != 0)
@@ -24,6 +30,8 @@ public class ServerBehaviour : MonoBehaviour
             return;
         }
         m_Driver.Listen();
+
+        serverSimulation=new(sendData);
     }
 
     void OnDestroy()
@@ -52,6 +60,7 @@ public class ServerBehaviour : MonoBehaviour
         while ((c = m_Driver.Accept()) != default)
         {
             m_Connections.Add(c);
+            serverSimulation.AddPlayer();
             Debug.Log("Accepted a connection.");
         }
 
@@ -67,16 +76,19 @@ public class ServerBehaviour : MonoBehaviour
                     stream.ReadBytes(nativebytes);
                     var bytes = nativebytes.ToArray();
                     nativebytes.Dispose();
-                    var values =bytes.Select(e=>(CardValue)e).ToArray();
+                    var data = new Data(bytes);
+                    serverSimulation.ReceiveData(data);
+                    // Debug.Log(data);
+//                   var values =bytes.Select(e=>(CardValue)e).ToArray();
                     
-//                    Debug.Log($"Got {value} from a client, converting to card");
+// //                    Debug.Log($"Got {value} from a client, converting to card");
 
-                    //CardStruct card = new CardStruct(value, CardSuit.Hearts,CardDeck.One);
-                    var cards = values.Select(v=>new CardStruct(v,CardSuit.Hearts,CardDeck.One));
-                    var bytes2 = new NativeArray<byte>(cards.Select(c=>(byte)c).ToArray(),Allocator.Temp);
-                    m_Driver.BeginSend(m_Pipeline, m_Connections[i], out var writer);
-                    writer.WriteBytes(bytes2);
-                    m_Driver.EndSend(writer);
+//                     //CardStruct card = new CardStruct(value, CardSuit.Hearts,CardDeck.One);
+//                     var cards = values.Select(v=>new CardStruct(v,CardSuit.Hearts,CardDeck.One));
+//                     var bytes2 = new NativeArray<byte>(cards.Select(c=>c.ToByte()).ToArray(),Allocator.Temp);
+//                     m_Driver.BeginSend(m_Pipeline, m_Connections[i], out var writer);
+//                     writer.WriteBytes(bytes2);
+//                     m_Driver.EndSend(writer);
                 }
                 else if (cmd == NetworkEvent.Type.Disconnect)
                 {
@@ -88,4 +100,15 @@ public class ServerBehaviour : MonoBehaviour
         }
 
     }
+
+    private void sendData(Data data,int id)
+    {
+        // Debug.Log(data);
+        m_Driver.BeginSend(m_Pipeline, m_Connections[id], out var writer);
+        writer.WriteBytes(data.ToBytes());
+        m_Driver.EndSend(writer);
+
+    }
+
+    
 }

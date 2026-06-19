@@ -1,6 +1,3 @@
-using System;
-using UnityEngine;
-
 [System.Serializable]
 public readonly struct CardStruct  
 {
@@ -9,6 +6,11 @@ public readonly struct CardStruct
     public CardStruct(CardValue value,CardSuit cardSuit,CardDeck cardDeck)
     {
         id = (byte)((byte)value + (byte)cardSuit + (byte)cardDeck);
+    }
+
+    public byte ToByte()
+    {
+        return id;
     }
 
     public readonly CardValue value => (CardValue)(id & 0b0_0_00_1111);
@@ -21,75 +23,37 @@ public readonly struct CardStruct
         return $"Deck {deck}, {value} of {suit}";
     }
 
-    public static explicit operator byte(CardStruct cardStruct)
-    {
-        return cardStruct.id;
-    }
-
-    public static explicit operator CardStruct(byte data)
-    {
-        return new CardStruct(data);
-        
-    }
-
-    private CardStruct(byte data)
+    public CardStruct(byte data)
     {
         id=data;
     }
+
+    public CardStruct Censored()
+    {
+        byte temp = id;
+        
+        temp &= 0b_01110000;
+        temp |= 0b_10000000;
+
+        return new CardStruct(temp);
+
+    }
+
+    
+    
 }
 
 public static class CardExtensions
 {
-    // public static string SuitToString(this CardSuit suit)
-    // {
-    //     return suit switch
-    //     {
-    //         CardSuit.Clubs => "Clubs",
-    //         CardSuit.Diamonds => "Diamonds",
-    //         CardSuit.Hearts => "Hearts",
-    //         CardSuit.Spades => "Spades",
-    //         _ => throw new NotImplementedException()
-    //     };
-    // }
+    public static bool IsGreaterThanOrEqualTo(this CardValue card1,CardValue card2)
+    {
+        if(card1==CardValue.Ace) return true;
+        if(card2==CardValue.Ace) return false;
+        return (byte)card1>=(byte)card2;
 
-    // public static string ValueToString(this CardValue value)
-    // {
-    //     return value switch
-    //     {
-    //         CardValue.Ace => "Ace",
-    //         CardValue.Two => "2",
-    //         CardValue.Three => "3",
-    //         CardValue.Four => "4",
-    //         CardValue.Five => "5",
-    //         CardValue.Six => "6",
-    //         CardValue.Seven => "7",
-    //         CardValue.Eight => "8",
-    //         CardValue.Nine => "9",
-    //         CardValue.Ten => "10",
-    //         CardValue.Jack => "Jack",
-    //         CardValue.Queen => "Queen",
-    //         CardValue.King => "King",
-    //         CardValue.Joker => "Joker",
-    //         _ => throw new NotImplementedException()
-    //     };
-    // }
+    }
 
-    // public static string DeckToString(this CardDeck deck)
-    // {
-    //     return deck switch
-    //     {
-    //         CardDeck.One => "One",
-    //         CardDeck.Two => "Two",
-    //         _ => throw new NotImplementedException()
-    //     };
-    // }
-
-    // public static string CardToString(this CardStruct cardStruct)
-    // {
-    //     return $"Deck {cardStruct.deck.DeckToString()} {cardStruct.value.ValueToString()} Of {cardStruct.suit.SuitToString()}";
-    // }
 }
-
 
 
 public enum CardValue : byte
@@ -103,11 +67,11 @@ public enum CardValue : byte
     Seven=7,
     Eight=8,
     Nine=9,
-    Ten=10,
-    Jack=11,
-    Queen=12,
-    King=13,
-    Joker=14
+    Ten=10,//a
+    Jack=11,//b
+    Queen=12,//c
+    King=13,//d
+    Joker=14,//e
 
 }
 
