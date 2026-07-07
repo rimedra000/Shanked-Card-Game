@@ -12,9 +12,10 @@ GameObject:
   - component: {fileID: 222563417271599888}
   - component: {fileID: 6678468365734587374}
   - component: {fileID: 93122540169110862}
-  - component: {fileID: 6820427112900284979}
+  - component: {fileID: 3549945895047849266}
+  - component: {fileID: 3639857700777345731}
   m_Layer: 5
-  m_Name: Two
+  m_Name: CardPrefab
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -30,14 +31,14 @@ RectTransform:
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 166.14, y: 385.09}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &222563417271599888
 CanvasRenderer:
@@ -67,9 +68,9 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 0}
-  m_Type: 1
-  m_PreserveAspect: 0
+  m_Sprite: {fileID: 21300000, guid: fce6fbac6406db69c913f3bff189b6c4, type: 3}
+  m_Type: 0
+  m_PreserveAspect: 1
   m_FillCenter: 1
   m_FillMethod: 4
   m_FillAmount: 1
@@ -120,20 +121,8 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 6678468365734587374}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 6820427112900284979}
-        m_TargetAssemblyTypeName: Card, Assembly-CSharp
-        m_MethodName: SendCardToggle
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
---- !u!114 &6820427112900284979
+      m_Calls: []
+--- !u!114 &3549945895047849266
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -142,8 +131,23 @@ MonoBehaviour:
   m_GameObject: {fileID: 5063390011317731493}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8535f3e252b66901180ef377722dd5e9, type: 3}
+  m_Script: {fileID: 11500000, guid: ac9b96534f47dbd4699c1ad7f0a63f46, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: 
-  cardImage: {fileID: 6678468365734587374}
-  faceUp: 1
+  m_EditorClassIdentifier: Assembly-CSharp::CardObject
+  image: {fileID: 6678468365734587374}
+  button: {fileID: 93122540169110862}
+--- !u!114 &3639857700777345731
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5063390011317731493}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cfabb0440166ab443bba8876756fdfa9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Shadow
+  m_EffectColor: {r: 0, g: 0, b: 0, a: 0.5}
+  m_EffectDistance: {x: 0, y: -10}
+  m_UseGraphicAlpha: 1

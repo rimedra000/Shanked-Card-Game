@@ -13,7 +13,7 @@ public readonly struct CardStruct
         return id;
     }
 
-    public readonly CardValue value => (CardValue)(id & 0b0_0_00_1111);
+    public readonly CardValue value => (CardValue)(id & 0b1_0_00_1111);
     public readonly CardSuit suit => (CardSuit)(id & 0b0_0_11_0000);
 
     public readonly CardDeck deck => (CardDeck)(id & 0b0_1_00_0000);
@@ -40,6 +40,27 @@ public readonly struct CardStruct
     }
 
     
+    public static bool operator ==(CardStruct card1,CardStruct card2)
+    {
+        return card1.id==card2.id;
+    }
+
+    public static bool operator !=(CardStruct card1,CardStruct card2)
+    {
+        return card1.id!=card2.id;
+    }
+
+    public override bool Equals(object obj)
+    {
+        return obj is CardStruct && this == (CardStruct)obj;
+    }
+
+    public override int GetHashCode()
+    {
+        return id;
+    }
+
+    
     
 }
 
@@ -51,6 +72,26 @@ public static class CardExtensions
         if(card2==CardValue.Ace) return false;
         return (byte)card1>=(byte)card2;
 
+    }
+
+    public static byte[] ToByteArray(this CardStruct[] cards)
+    {
+        byte[] output=new byte[cards.Length];
+        for (int i = 0; i < cards.Length; i++)
+        {
+            output[i] = cards[i].ToByte();
+        }
+        return output;
+    }
+
+    public static CardStruct[] ToCardStructArray(this byte[] cards)
+    {
+        CardStruct[] output=new CardStruct[cards.Length];
+        for (int i = 0; i < cards.Length; i++)
+        {
+            output[i] = new CardStruct(cards[i]);
+        }
+        return output;
     }
 
 }
@@ -72,6 +113,7 @@ public enum CardValue : byte
     Queen=12,//c
     King=13,//d
     Joker=14,//e
+    Blank=0x80
 
 }
 
