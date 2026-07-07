@@ -28,7 +28,7 @@ public class ServerBehaviour : MonoBehaviour
         m_Pipeline = m_Driver.CreatePipeline(typeof(ReliableSequencedPipelineStage));
         m_Connections = new NativeList<NetworkConnection>(8, Allocator.Persistent);
 
-        var endpoint = NetworkEndpoint.LoopbackIpv4.WithPort(7777);
+        var endpoint = NetworkEndpoint.AnyIpv4.WithPort(7777);
         if (m_Driver.Bind(endpoint) != 0)
         {
             Debug.LogError("Failed to bind to port 7777.");

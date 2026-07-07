@@ -23,7 +23,7 @@ public class ClientBehaviour : MonoBehaviour
         Debug.Log("Client start.");
         m_Driver = NetworkDriver.Create(new WebSocketNetworkInterface());
         m_Pipeline = m_Driver.CreatePipeline(typeof(ReliableSequencedPipelineStage));
-        var endpoint = NetworkEndpoint.LoopbackIpv4.WithPort(7777);
+        var endpoint = GameManager.networkEndpoint;
         m_Connection = m_Driver.Connect(endpoint);
     }
 
