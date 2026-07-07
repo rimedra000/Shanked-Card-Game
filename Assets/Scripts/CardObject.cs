@@ -43,4 +43,12 @@ public class CardObject : MonoBehaviour
         image.sprite=GameManager.getSpriteFromCardStruct(card);
         cardStruct=card;
     }
+
+    public void setCardStructHidden(CardStruct card)
+    {
+        image.sprite=GameManager.getSpriteFromCardStruct(card.Censored());
+        cardStruct=card;
+    }
+
+
 }

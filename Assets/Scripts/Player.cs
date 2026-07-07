@@ -63,21 +63,7 @@ public class Player : MonoBehaviour
 
             if(isSetup)
             {
-                isSetup=false;
-                foreach (CardObject card in hiddenCards)
-                {
-                    card.button.interactable=false;
-                }
-                foreach (CardObject card in shownCards)
-                {
-                    card.button.interactable=false;
-                }
-                foreach (CardObject card in handCards)
-                {
-                    card.button.interactable=false;
-                }
-                button.interactable=false;
-                DeSelectAll();
+                SetupEnd();
                 // return;
             }
 
@@ -126,6 +112,25 @@ public class Player : MonoBehaviour
                 RemovePlayer(cards);
                 break;
         }
+    }
+
+    private void SetupEnd()
+    {
+        isSetup = false;
+        foreach (CardObject card in hiddenCards)
+        {
+            card.button.interactable = false;
+        }
+        foreach (CardObject card in shownCards)
+        {
+            card.button.interactable = false;
+        }
+        foreach (CardObject card in handCards)
+        {
+            card.button.interactable = false;
+        }
+        button.interactable = false;
+        DeSelectAll();
     }
 
     private void RemovePlayer(CardStruct[] cards)
@@ -285,6 +290,7 @@ public class Player : MonoBehaviour
         foreach (CardStruct card in cards)
         {
             CardObject cardObject = MakeCard(card, hiddenCardsTransform);
+            cardObject.setCardStructHidden(card);
             cardObject.button.interactable=false;
             hiddenCards.Add(cardObject);
         }
