@@ -13,7 +13,7 @@ public class MainMenu : MonoBehaviour
     // [SerializeField] private TMP_InputField nameText;
     private void Awake() {
         #if !SERVER
-        hostButton.enabled=false;
+        hostButton.gameObject.SetActive(false);
         #endif    
     }
     
