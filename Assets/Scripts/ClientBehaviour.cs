@@ -78,6 +78,7 @@ public class ClientBehaviour : MonoBehaviour
             {
                 Debug.Log("Client got disconnected from server.");
                 m_Connection = default;
+                UnityEngine.SceneManagement.SceneManager.LoadScene(0);
             }
 
 

@@ -26,22 +26,24 @@ public class Player : MonoBehaviour
     private int playerID=-1;
     private bool turn=false;
     private bool isSetup=true;
+
+    private bool isReady=false;
     private bool isShanked;
 
+
+
     private void Start()
-    {
-        
+    { 
         button.onClick.AddListener(PlayerConfirm);
         readyButton.onClick.AddListener(ReadyConfirm);
         clientBehaviour.onDataReceived += ReceiveData;
-
     }
 
     private void ReceiveData(object _, Data e)
     {
         if (playerID==-1)
         {
-            AddSelf(e);       
+            Init(e);       
             return;
         }
 
@@ -116,19 +118,10 @@ public class Player : MonoBehaviour
 
     private void SetupEnd()
     {
+        Destroy(readyButton.gameObject);
         isSetup = false;
-        foreach (CardObject card in hiddenCards)
-        {
-            card.button.interactable = false;
-        }
-        foreach (CardObject card in shownCards)
-        {
-            card.button.interactable = false;
-        }
-        foreach (CardObject card in handCards)
-        {
-            card.button.interactable = false;
-        }
+        SetCardsInteract(shownCards,false);
+        SetCardsInteract(handCards,false);
         button.interactable = false;
         DeSelectAll();
     }
@@ -156,10 +149,11 @@ public class Player : MonoBehaviour
     }
 
 
-    private void AddSelf(Data e)
+    private void Init(Data e)
     {
         // Debug.Log(e.dataHeader.player);
         playerID=e.dataHeader.player;
+        readyButton.interactable=true;
         SendData(new Data(new DataHeader((byte)playerID,GameEvent.AddPlayer),Array.Empty<CardStruct>()));
     }
 
@@ -168,23 +162,13 @@ public class Player : MonoBehaviour
         turn=true;
         SetInteractablity();
     }
-    
+
     private void EndTurn()
     {
         buttonText.text="";
-        foreach (CardObject card in handCards)
-        {
-            card.button.interactable=false;
-        }
-        foreach (CardObject card in shownCards)
-        {
-            card.button.interactable=false;
-        }
-        foreach (CardObject card in hiddenCards)
-        {
-            card.button.interactable=false;
-        }
-
+        SetCardsInteract(handCards,false);
+        SetCardsInteract(shownCards,false);
+        SetCardsInteract(hiddenCards,false);
         button.interactable=false;
     }
 
@@ -199,14 +183,8 @@ public class Player : MonoBehaviour
         if (!emptyHandCards)
         {
             buttonText.text="Play Cards";
-            foreach (CardObject card in hiddenCards)
-            {
-                card.button.interactable = false;
-            }
-            foreach (CardObject card in shownCards)
-            {
-                card.button.interactable = false;
-            }
+            SetCardsInteract(hiddenCards,false);
+            SetCardsInteract(shownCards,false);
             isShanked = true;
             foreach (CardObject card in handCards)
             {
@@ -223,23 +201,14 @@ public class Player : MonoBehaviour
         else if (!emptyShownCards)
         {
             buttonText.text="Move Cards";
-            foreach (CardObject card in hiddenCards)
-            {
-                card.button.interactable = false;
-            }
-            foreach (CardObject card in shownCards)
-            {
-                card.button.interactable = true;
-            }
+            SetCardsInteract(hiddenCards,false);
+            SetCardsInteract(shownCards,true);
 
         }
         else if (!emptyHiddenCards)
         {
             buttonText.text="Move Cards";
-            foreach (CardObject card in hiddenCards)
-            {
-                card.button.interactable = true;
-            }
+            SetCardsInteract(hiddenCards,true);
         }
     }
 
@@ -259,14 +228,8 @@ public class Player : MonoBehaviour
         shownCards.Add(MakeCard(cards[1],shownCardsTransform));
         RemoveCard(cards[1],handCards);
         handCards.Add(MakeCard(cards[0],handCardsTransform));
-        foreach (CardObject card in handCards)
-        {
-            card.button.interactable=true;
-        }
-        foreach (CardObject card in shownCards)
-        {
-            card.button.interactable=true;
-        }
+        SetCardsInteract(handCards,true);
+        SetCardsInteract(shownCards,true);
         button.interactable=false;
     }
 
@@ -370,17 +333,12 @@ public class Player : MonoBehaviour
                 SelectCard(cardObject);
                 if (handCards.Contains(cardObject))
                 {
-                    foreach (CardObject card in handCards)
-                    {
-                        card.button.interactable=false;
-                    }
+                    SetCardsInteract(handCards,false);
                 }
                 else if (shownCards.Contains(cardObject))
                 {
-                    foreach (CardObject card in shownCards)
-                    {
-                        card.button.interactable=false;
-                    }
+                    SetCardsInteract(shownCards,false);
+
                 }
                 cardObject.button.interactable=true;
             }
@@ -389,17 +347,11 @@ public class Player : MonoBehaviour
                 DeSelectCard(cardObject);
                 if (handCards.Contains(cardObject))
                 {
-                    foreach (CardObject card in handCards)
-                    {
-                        card.button.interactable=true;
-                    }
+                    SetCardsInteract(handCards,true);
                 }
                 else if (shownCards.Contains(cardObject))
                 {
-                    foreach (CardObject card in shownCards)
-                    {
-                        card.button.interactable=true;
-                    }
+                    SetCardsInteract(shownCards,true);
                 }
                 
             }
@@ -443,20 +395,14 @@ public class Player : MonoBehaviour
             {
                 if (selectedCards.Count<=0)
                 {
-                    foreach (CardObject card in shownCards)
-                    {
-                        card.button.interactable=false;
-                    }
+                    SetCardsInteract(shownCards,false);
                     cardObject.button.interactable=true;
                     SelectCard(cardObject);
                     button.interactable=true;
                 }
                 else
                 {
-                    foreach (CardObject card in shownCards)
-                    {
-                        card.button.interactable=true;
-                    }
+                    SetCardsInteract(shownCards,true);
                     DeSelectCard(cardObject);
                     button.interactable=false;
                 }
@@ -465,20 +411,14 @@ public class Player : MonoBehaviour
             {
                 if (selectedCards.Count<=0)
                 {
-                    foreach (CardObject card in hiddenCards)
-                    {
-                        card.button.interactable=false;
-                    }
+                    SetCardsInteract(hiddenCards,false);
                     cardObject.button.interactable=true;
                     SelectCard(cardObject);
                     button.interactable=true;
                 }
                 else
                 {
-                    foreach (CardObject card in hiddenCards)
-                    {
-                        card.button.interactable=true;
-                    }
+                    SetCardsInteract(hiddenCards,true);
                     DeSelectCard(cardObject);
                     button.interactable=false;
                 }
@@ -564,9 +504,24 @@ public class Player : MonoBehaviour
 
     private void ReadyConfirm()
     {
-        Destroy(readyButton.gameObject);
+        if(!isReady)
+        {
+            isReady=true;
+            DeSelectAll();
+            SetCardsInteract(shownCards,false);
+            SetCardsInteract(handCards,false);
+        }
+        else
+        {
+            isReady=false;
+            SetCardsInteract(shownCards,true);
+            SetCardsInteract(handCards,true);
+        }
+
         Data data = new Data(new DataHeader((byte)playerID,GameEvent.Ready),Array.Empty<CardStruct>());
         SendData(data);
+        
+
         
     }
 
@@ -575,6 +530,14 @@ public class Player : MonoBehaviour
         clientBehaviour.sendData(data);
     }
 
+
+    private void SetCardsInteract(List<CardObject> cards,bool interactable)
+    {
+        foreach (CardObject card in cards)
+        {
+            card.button.interactable = interactable;
+        }
+    }
 
 
 
