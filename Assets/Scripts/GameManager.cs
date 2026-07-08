@@ -8,7 +8,7 @@ public static class GameManager
     // public static Func<CardStruct,bool> ValidCard;
     public static PlayPile playPile;
 
-    public static Unity.Networking.Transport.NetworkEndpoint networkEndpoint = Unity.Networking.Transport.NetworkEndpoint.LoopbackIpv4;
+    public static Unity.Networking.Transport.NetworkEndpoint networkEndpoint = Unity.Networking.Transport.NetworkEndpoint.LoopbackIpv4.WithPort(7777);
     // public static DrawPile drawPile;
     // public static DiscardPile discardPile;
 

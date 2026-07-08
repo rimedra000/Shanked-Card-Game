@@ -35,7 +35,7 @@ public class MainMenu : MonoBehaviour
 
     public void Host()
     {
-        GameManager.networkEndpoint=NetworkEndpoint.LoopbackIpv4;
+        GameManager.networkEndpoint=NetworkEndpoint.LoopbackIpv4.WithPort(7777);
         SceneManager.LoadScene(2);
     }
 

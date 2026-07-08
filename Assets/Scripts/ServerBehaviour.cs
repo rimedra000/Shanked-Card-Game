@@ -65,7 +65,7 @@ public class ServerBehaviour : MonoBehaviour
         while ((c = m_Driver.Accept()) != default)
         {
             m_Connections.Add(c);
-            
+            Debug.Log($"client {m_Connections.Length-1} connected (s)");
             Data data = new Data(new DataHeader((byte)(m_Connections.Length-1),GameEvent.AddPlayer),Array.Empty<CardStruct>());
             m_Driver.BeginSend(m_Pipeline, c, out var writer);
             writer.WriteBytes(data.ToBytes());
