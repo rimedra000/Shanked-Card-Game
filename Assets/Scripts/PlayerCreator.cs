@@ -11,17 +11,18 @@ public class PlayerCreator : MonoBehaviour
         GameManager.clientBehaviour.onDataReceived += ReceiveData;
     }
 
-    private void ReceiveData(object sender, Data e)
+    private void ReceiveData(object sender, Data data)
     {
-        if(a==-1){a=e.dataHeader.player;return;}
-        if(a==e.dataHeader.player){return;}
-        if (e.dataHeader.gameEvent!=GameEvent.AddPlayer)
+        if(a==-1){a=data.dataHeader.player;return;}
+        if(a==data.dataHeader.player){return;}
+        if (data.dataHeader.gameEvent!=GameEvent.AddPlayer)
         {
             return;
         }
 
         NetworkedPlayer networkedPlayer = Instantiate(NetworkedPlayerPrefab, transform).GetComponent<NetworkedPlayer>();
-        networkedPlayer.playerID=e.dataHeader.player;
+        networkedPlayer.playerID=data.dataHeader.player;
+        networkedPlayer.SetName(System.Text.Encoding.UTF8.GetString(data.otherBytes));
     }
 
 

@@ -39,25 +39,25 @@ public class Player : MonoBehaviour
         clientBehaviour.onDataReceived += ReceiveData;
     }
 
-    private void ReceiveData(object _, Data e)
+    private void ReceiveData(object _, Data data)
     {
         if (playerID==-1)
         {
-            Init(e);       
+            Init(data);       
             return;
         }
 
-        if (e.dataHeader.gameEvent==GameEvent.StartTurn)
+        if (data.dataHeader.gameEvent==GameEvent.StartTurn)
         {
 
-            if (turn&&e.dataHeader.player!=playerID)
+            if (turn&&data.dataHeader.player!=playerID)
             {
                 turn=false;    //turn end
                 EndTurn();
             }
        
             
-            if(e.dataHeader.player!=playerID)
+            if(data.dataHeader.player!=playerID)
             {
                 //others turns
             }
@@ -73,9 +73,9 @@ public class Player : MonoBehaviour
 
         }
 
-        if (e.dataHeader.player!=playerID) return;
-        CardStruct[] cards = e.cards;
-        switch (e.dataHeader.gameEvent)
+        if (data.dataHeader.player!=playerID) return;
+        CardStruct[] cards = data.cards;
+        switch (data.dataHeader.gameEvent)
         {
             case GameEvent.PlayCards:
                 PlayCards(cards);
@@ -149,12 +149,14 @@ public class Player : MonoBehaviour
     }
 
 
-    private void Init(Data e)
+    private void Init(Data data)
     {
         // Debug.Log(e.dataHeader.player);
-        playerID=e.dataHeader.player;
+        playerID=data.dataHeader.player;
         readyButton.interactable=true;
-        SendData(new Data(new DataHeader((byte)playerID,GameEvent.AddPlayer),Array.Empty<CardStruct>()));
+        
+        byte[] array = System.Text.Encoding.UTF8.GetBytes(GameManager.username);
+        SendData(new Data(new DataHeader((byte)playerID,GameEvent.AddPlayer),array));
     }
 
     private void StartTurn()
@@ -510,6 +512,7 @@ public class Player : MonoBehaviour
             DeSelectAll();
             SetCardsInteract(shownCards,false);
             SetCardsInteract(handCards,false);
+            button.interactable=false;
         }
         else
         {

@@ -211,6 +211,7 @@ MonoBehaviour:
   handCardsTransform: {fileID: 4386984964004172034}
   shownCardsTransform: {fileID: 9213997335171954381}
   hiddenCardsTransform: {fileID: 6244060585662666358}
+  usernameText: {fileID: 4635831571544439070}
   playerID: 0
 --- !u!1 &6838934826476625370
 GameObject:

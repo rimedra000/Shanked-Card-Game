@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using TMPro;
+
 // using System.Linq;
 using UnityEngine;
 
@@ -14,6 +16,8 @@ public class NetworkedPlayer : MonoBehaviour
     [SerializeField] private Transform handCardsTransform;
     [SerializeField] private Transform shownCardsTransform;
     [SerializeField] private Transform hiddenCardsTransform;
+
+    [SerializeField] private TextMeshProUGUI usernameText;
 
     public int playerID=0;
     private bool turn=false;
@@ -178,6 +182,11 @@ public class NetworkedPlayer : MonoBehaviour
         var a = list.Find(c => c.cardStruct==card);
         Destroy(a.gameObject);
         list.Remove(a);
+    }
+
+    public void SetName(string name)
+    {
+        usernameText.text=name;
     }
 
     

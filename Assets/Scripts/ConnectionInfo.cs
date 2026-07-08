@@ -97,6 +97,13 @@ public struct Data
         this.otherBytes = cards.ToByteArray();
     }
 
+
+    public Data(DataHeader dataHeader, byte[] bytes)
+    {
+        this.dataHeader = dataHeader;
+        this.otherBytes = bytes;
+    }
+
     public Data(DataHeader dataHeader)
     {
         this.dataHeader = dataHeader;

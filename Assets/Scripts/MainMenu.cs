@@ -1,3 +1,4 @@
+using TMPro;
 using Unity.Networking.Transport;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -8,6 +9,8 @@ public class MainMenu : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     [SerializeField] private Button playButton;
     [SerializeField] private Button hostButton;
+
+    // [SerializeField] private TMP_InputField nameText;
     private void Awake() {
         #if !SERVER
         hostButton.enabled=false;
@@ -39,9 +42,16 @@ public class MainMenu : MonoBehaviour
         }
     }
 
+    public void SetName(string name)
+    {
+        GameManager.username=name;
+    }
+
+
 #if SERVER
     public void Host()
     {
+        
         GameManager.networkEndpoint=NetworkEndpoint.LoopbackIpv4.WithPort(7777);
         SceneManager.LoadScene(2);
     }
