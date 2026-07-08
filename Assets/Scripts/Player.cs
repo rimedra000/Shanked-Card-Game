@@ -155,6 +155,20 @@ public class Player : MonoBehaviour
         hiddenCards.Clear();
     }
 
+
+    private void AddSelf(Data e)
+    {
+        // Debug.Log(e.dataHeader.player);
+        playerID=e.dataHeader.player;
+        SendData(new Data(new DataHeader((byte)playerID,GameEvent.AddPlayer),Array.Empty<CardStruct>()));
+    }
+
+    private void StartTurn()
+    {
+        turn=true;
+        SetInteractablity();
+    }
+    
     private void EndTurn()
     {
         buttonText.text="";
@@ -172,19 +186,6 @@ public class Player : MonoBehaviour
         }
 
         button.interactable=false;
-    }
-
-    private void AddSelf(Data e)
-    {
-        // Debug.Log(e.dataHeader.player);
-        playerID=e.dataHeader.player;
-        SendData(new Data(new DataHeader((byte)playerID,GameEvent.AddPlayer),Array.Empty<CardStruct>()));
-    }
-
-    private void StartTurn()
-    {
-        turn=true;
-        SetInteractablity();
     }
 
     private void SetInteractablity()

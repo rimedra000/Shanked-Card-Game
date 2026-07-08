@@ -7,6 +7,13 @@ public class MainMenu : MonoBehaviour
 {
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     [SerializeField] private Button playButton;
+    [SerializeField] private Button hostButton;
+    private void Awake() {
+        #if !SERVER
+        hostButton.enabled=false;
+        #endif    
+    }
+    
     void Start()
     {
         
@@ -32,12 +39,13 @@ public class MainMenu : MonoBehaviour
         }
     }
 
-
+#if SERVER
     public void Host()
     {
         GameManager.networkEndpoint=NetworkEndpoint.LoopbackIpv4.WithPort(7777);
         SceneManager.LoadScene(2);
     }
+#endif
 
     public void Play()
     {

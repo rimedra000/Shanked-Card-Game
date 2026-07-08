@@ -1,3 +1,4 @@
+#if SERVER
 using TMPro;
 using UnityEngine;
 using System;
@@ -73,3 +74,4 @@ public class ServerTester : MonoBehaviour
 
 
 }
+#endif

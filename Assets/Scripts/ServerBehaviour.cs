@@ -1,3 +1,4 @@
+#if SERVER
 using UnityEngine;
 using Unity.Collections;
 using Unity.Networking.Transport;
@@ -7,7 +8,8 @@ using System;
 
 public class ServerBehaviour : MonoBehaviour
 {
-
+    
+    
     NetworkDriver m_Driver;
     NativeList<NetworkConnection> m_Connections;
     NetworkPipeline m_Pipeline;
@@ -125,3 +127,4 @@ public class ServerBehaviour : MonoBehaviour
 
     
 }
+#endif
