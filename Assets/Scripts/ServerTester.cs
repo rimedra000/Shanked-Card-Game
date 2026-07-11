@@ -1,7 +1,6 @@
 #if SERVER
 using TMPro;
 using UnityEngine;
-using System;
 using System.Globalization;
 
 public class ServerTester : MonoBehaviour
@@ -19,12 +18,6 @@ public class ServerTester : MonoBehaviour
         // sim.AddPlayer();
         clientBehaviour.onDataReceived += output;
         
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
         
     }
 

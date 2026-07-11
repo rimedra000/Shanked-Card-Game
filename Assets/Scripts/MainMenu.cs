@@ -1,4 +1,3 @@
-using TMPro;
 using Unity.Networking.Transport;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -9,24 +8,6 @@ public class MainMenu : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     [SerializeField] private Button playButton;
     [SerializeField] private Button hostButton;
-
-    // [SerializeField] private TMP_InputField nameText;
-    private void Awake() {
-        #if !SERVER
-        hostButton.gameObject.SetActive(false);
-        #endif    
-    }
-    
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 
     
     public void SetIP(string ip)

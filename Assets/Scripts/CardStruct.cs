@@ -60,6 +60,11 @@ public readonly struct CardStruct
         return id;
     }
 
+    public static implicit operator CardValue(CardStruct card)
+    {
+        return card.value;
+    }
+
     
     
 }

@@ -30,14 +30,6 @@ public class CardObject : MonoBehaviour
         
     }
 
-    
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
     public void setCardStruct(CardStruct card)
     {
         image.sprite=GameManager.getSpriteFromCardStruct(card);

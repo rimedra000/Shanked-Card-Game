@@ -8,16 +8,6 @@ public class CardObjectTester : MonoBehaviour
     public CardSuit cardSuit;
     public CardDeck cardDeck;
 
-    void Start()
-    {
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
     private void OnValidate()
     {
         cardObject.setCardStruct(new CardStruct(cardValue,cardSuit,cardDeck));

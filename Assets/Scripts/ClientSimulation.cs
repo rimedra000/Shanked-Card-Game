@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -8,19 +7,17 @@ public class ClientSimulation : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
 
     private ClientBehaviour clientBehaviour;
-    private List<CardStruct> playPile = new();
-    private Stack<CardStruct> drawPile = new();
-    private Stack<CardStruct> discardPile = new();
+    public List<CardStruct> playPile {get; private set;} = new();
+    public Stack<CardStruct> drawPile {get; private set;} = new();
+    public Stack<CardStruct> discardPile {get; private set;} = new();
 
-    private byte turn=0;
+    public byte turn {get; private set;} =0;
 
-    private byte selfID=0; //TODO: figure out which player client is
+    public bool isSetupTime {get; private set;} = true;
 
-    private bool isSetupTime=true;
+    public Player[] players {get; private set;} = new Player[8];
 
-    private Player[] players=new Player[8];
-
-    private class Player
+    public class Player
     {
         public List<CardStruct> mainHand=new();
         public List<CardStruct> shownCards=new();
@@ -59,6 +56,7 @@ public class ClientSimulation : MonoBehaviour
                 break;
             case GameEvent.StartTurn:
                 turn=id;
+                isSetupTime=false;
                 break;
             case GameEvent.ClearPile:
                 discardPile = (Stack<CardStruct>)cards.Concat(discardPile);

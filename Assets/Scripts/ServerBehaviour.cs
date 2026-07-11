@@ -2,21 +2,15 @@
 using UnityEngine;
 using Unity.Collections;
 using Unity.Networking.Transport;
-using System.Linq;
 using System.Collections.Generic;
 using System;
 
 public class ServerBehaviour : MonoBehaviour
 {
-    
-    
     NetworkDriver m_Driver;
     NativeList<NetworkConnection> m_Connections;
     NetworkPipeline m_Pipeline;
-
     ServerSimulation serverSimulation;
-
-    List<Data> dataHistory=new();
 
     private void Awake()
     {
@@ -91,17 +85,6 @@ public class ServerBehaviour : MonoBehaviour
                     nativebytes.Dispose();
                     var data = new Data(bytes);
                     serverSimulation.ReceiveData(data);
-                    // Debug.Log(data);
-//                   var values =bytes.Select(e=>(CardValue)e).ToArray();
-                    
-// //                    Debug.Log($"Got {value} from a client, converting to card");
-
-//                     //CardStruct card = new CardStruct(value, CardSuit.Hearts,CardDeck.One);
-//                     var cards = values.Select(v=>new CardStruct(v,CardSuit.Hearts,CardDeck.One));
-//                     var bytes2 = new NativeArray<byte>(cards.Select(c=>c.ToByte()).ToArray(),Allocator.Temp);
-//                     m_Driver.BeginSend(m_Pipeline, m_Connections[i], out var writer);
-//                     writer.WriteBytes(bytes2);
-//                     m_Driver.EndSend(writer);
                 }
                 else if (cmd == NetworkEvent.Type.Disconnect)
                 {
@@ -124,7 +107,5 @@ public class ServerBehaviour : MonoBehaviour
         m_Driver.EndSend(writer);
 
     }
-
-    
 }
 #endif

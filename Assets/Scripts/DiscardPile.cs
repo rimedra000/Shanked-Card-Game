@@ -18,14 +18,13 @@ public class DiscardPile : MonoBehaviour
         GameManager.clientBehaviour.onDataReceived += ReceiveData;
     }
 
-    private void ReceiveData(object _, Data e)
+    private void ReceiveData(object _, Data data)
     {
-        GameEvent gameEvent = e.dataHeader.gameEvent;
+        GameEvent gameEvent = data.dataHeader.gameEvent;
         if (gameEvent!=GameEvent.ClearPile&&gameEvent!=GameEvent.RemovePlayer) return;
-        foreach (CardStruct card in e.cards.Reverse())
+        foreach (CardStruct card in data.cards.Reverse())
         {
             cards.Insert(0,MakeCard(card));
-
         }
     }
 
