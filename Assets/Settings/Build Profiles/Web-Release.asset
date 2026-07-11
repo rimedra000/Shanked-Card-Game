@@ -10,14 +10,14 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 15003, guid: 0000000000000000e000000000000000, type: 0}
-  m_Name: Web-Dev - Desktop - Development
+  m_Name: Web-Release
   m_EditorClassIdentifier: UnityEditor.dll::UnityEditor.Build.Profile.BuildProfile
   m_AssetVersion: 1
   m_BuildTarget: 20
   m_Subtarget: 0
   m_PlatformId: 84a3bb9e7420477f885e98145999eb20
   m_PlatformBuildProfile:
-    rid: 7133777872039968844
+    rid: 7133777904697868288
   m_OverrideGlobalSceneList: 1
   m_Scenes:
   - m_enabled: 1
@@ -424,13 +424,19 @@ MonoBehaviour:
     - line: '|   - m_BuildTarget: Standalone'
     - line: '|     m_StaticBatching: 1'
     - line: '|     m_DynamicBatching: 0'
+    - line: '|   - m_BuildTarget: Android'
+    - line: '|     m_StaticBatching: 1'
+    - line: '|     m_DynamicBatching: 0'
     - line: '|   - m_BuildTarget: WebGL'
     - line: '|     m_StaticBatching: 0'
     - line: '|     m_DynamicBatching: 0'
     - line: '|   m_BuildTargetShaderSettings: []'
     - line: '|   m_BuildTargetGraphicsJobs: []'
     - line: '|   m_BuildTargetGraphicsJobMode: []'
-    - line: '|   m_BuildTargetGraphicsAPIs: []'
+    - line: '|   m_BuildTargetGraphicsAPIs:'
+    - line: '|   - m_BuildTarget: WebGLSupport'
+    - line: '|     m_APIs: 0b000000'
+    - line: '|     m_Automatic: 1'
     - line: '|   m_BuildTargetVRSettings: []'
     - line: '|   m_DefaultShaderChunkSizeInMB: 16'
     - line: '|   m_DefaultShaderChunkCount: 0'
@@ -692,10 +698,10 @@ MonoBehaviour:
     - line: '|   blurSplashScreenBackground: 1'
     - line: '|   spritePackerPolicy: '
     - line: '|   webGLMemorySize: 32'
-    - line: '|   webGLExceptionSupport: 1'
+    - line: '|   webGLExceptionSupport: 0'
     - line: '|   webGLNameFilesAsHashes: 0'
     - line: '|   webGLShowDiagnostics: 0'
-    - line: '|   webGLDataCaching: 0'
+    - line: '|   webGLDataCaching: 1'
     - line: '|   webGLDebugSymbols: 0'
     - line: '|   webGLEmscriptenArgs: '
     - line: '|   webGLModulesDirectory: '
@@ -713,11 +719,11 @@ MonoBehaviour:
     - line: '|   webGLMemoryLinearGrowthStep: 16'
     - line: '|   webGLMemoryGeometricGrowthStep: 0.2'
     - line: '|   webGLMemoryGeometricGrowthCap: 96'
-    - line: '|   webGLPowerPreference: 1'
-    - line: '|   webGLWebAssemblyTable: 1'
-    - line: '|   webGLWebAssemblyBigInt: 1'
+    - line: '|   webGLPowerPreference: 2'
+    - line: '|   webGLWebAssemblyTable: 0'
+    - line: '|   webGLWebAssemblyBigInt: 0'
     - line: '|   webGLCloseOnQuit: 0'
-    - line: '|   webWasm2023: 1'
+    - line: '|   webWasm2023: 0'
     - line: '|   webEnableSubmoduleStrippingCompatibility: 0'
     - line: '|   scriptingDefineSymbols:'
     - line: '|     Android: SERVER'
@@ -727,11 +733,14 @@ MonoBehaviour:
     - line: '|   scriptingBackend:'
     - line: '|     Android: 1'
     - line: '|   il2cppCompilerConfiguration:'
-    - line: '|     WebGL: 0'
+    - line: '|     Android: 0'
+    - line: '|     WebGL: 2'
     - line: '|   il2cppCodeGeneration:'
-    - line: '|     WebGL: 1'
-    - line: '|   il2cppStacktraceInformation: {}'
-    - line: '|   managedStrippingLevel: {}'
+    - line: '|     WebGL: 0'
+    - line: '|   il2cppStacktraceInformation:'
+    - line: '|     Android: 1'
+    - line: '|   managedStrippingLevel:'
+    - line: '|     WebGL: 3'
     - line: '|   incrementalIl2cppBuild: {}'
     - line: '|   suppressCommonWarnings: 1'
     - line: '|   allowUnsafeCode: 0'
@@ -844,10 +853,10 @@ MonoBehaviour:
   references:
     version: 2
     RefIds:
-    - rid: 7133777872039968844
+    - rid: 7133777904697868288
       type: {class: WebGLPlatformSettings, ns: UnityEditor.WebGL, asm: UnityEditor.WebGL.Extensions}
       data:
-        m_Development: 1
+        m_Development: 0
         m_ConnectProfiler: 0
         m_BuildWithDeepProfilingSupport: 0
         m_AllowDebugging: 0
@@ -861,7 +870,7 @@ MonoBehaviour:
         m_InsightsSettingsContainer:
           m_BuildProfileEngineDiagnosticsState: 2
         m_AdaptivePerformanceEnabled: 0
-        m_CodeOptimization: 0
+        m_CodeOptimization: 1
         m_WebGLClientBrowserPath: 
         m_WebGLClientBrowserType: 0
-        m_WebGLTextureSubtarget: 1
+        m_WebGLTextureSubtarget: 0
