@@ -12,10 +12,13 @@ public class ServerBehaviour : MonoBehaviour
     NetworkPipeline m_Pipeline;
     ServerSimulation serverSimulation;
 
+    #if CLIENT
     private void Awake()
     {
         UnityEngine.SceneManagement.SceneManager.LoadScene(1,UnityEngine.SceneManagement.LoadSceneMode.Additive);
     }
+
+    #endif
 
     void Start()
     {

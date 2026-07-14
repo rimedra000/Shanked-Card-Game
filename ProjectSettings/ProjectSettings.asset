@@ -692,6 +692,7 @@ PlayerSettings:
   webEnableSubmoduleStrippingCompatibility: 0
   scriptingDefineSymbols:
     Android: SERVER;CLIENT
+    Server: SERVER
     Standalone: SERVER;CLIENT
     WebGL: CLIENT
   additionalCompilerArguments: {}
@@ -705,7 +706,8 @@ PlayerSettings:
     WebGL: 1
   il2cppStacktraceInformation:
     Android: 1
-  managedStrippingLevel: {}
+  managedStrippingLevel:
+    Server: 3
   incrementalIl2cppBuild: {}
   suppressCommonWarnings: 1
   allowUnsafeCode: 0

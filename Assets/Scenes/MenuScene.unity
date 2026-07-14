@@ -183,6 +183,7 @@ GameObject:
   - component: {fileID: 435492689}
   - component: {fileID: 435492688}
   - component: {fileID: 435492687}
+  - component: {fileID: 435492690}
   m_Layer: 5
   m_Name: InputField (TMP)
   m_TagString: Untagged
@@ -361,6 +362,17 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 435492685}
   m_CullTransparentMesh: 1
+--- !u!1652712579 &435492690
+MultiplayerRolesData:
+  m_ObjectHideFlags: 2
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 435492685}
+  m_GameObjectRolesMask: 1
+  m_ComponentsRolesMasks:
+  - m_Object: {fileID: 435492689}
+    m_RolesMask: 1
 --- !u!1 &526484042
 GameObject:
   m_ObjectHideFlags: 0
@@ -424,6 +436,7 @@ GameObject:
   - component: {fileID: 617321647}
   - component: {fileID: 617321649}
   - component: {fileID: 617321648}
+  - component: {fileID: 617321650}
   m_Layer: 5
   m_Name: Text (TMP) (1)
   m_TagString: Untagged
@@ -550,6 +563,17 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 617321646}
   m_CullTransparentMesh: 1
+--- !u!1652712579 &617321650
+MultiplayerRolesData:
+  m_ObjectHideFlags: 2
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 617321646}
+  m_GameObjectRolesMask: 1
+  m_ComponentsRolesMasks:
+  - m_Object: {fileID: 617321649}
+    m_RolesMask: 1
 --- !u!1 &770283190
 GameObject:
   m_ObjectHideFlags: 0
@@ -700,6 +724,8 @@ GameObject:
   - component: {fileID: 1037143516}
   - component: {fileID: 1037143515}
   - component: {fileID: 1037143514}
+  - component: {fileID: 1037143518}
+  - component: {fileID: 1037143517}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -781,6 +807,59 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1652712579 &1037143517
+MultiplayerRolesData:
+  m_ObjectHideFlags: 2
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1037143513}
+  m_GameObjectRolesMask: 1
+  m_ComponentsRolesMasks: []
+--- !u!114 &1037143518
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1037143513}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a79441f348de89743a2939f4d699eac1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.RenderPipelines.Universal.Runtime::UnityEngine.Rendering.Universal.UniversalAdditionalCameraData
+  m_RenderShadows: 1
+  m_RequiresDepthTextureOption: 2
+  m_RequiresOpaqueTextureOption: 2
+  m_CameraType: 0
+  m_Cameras: []
+  m_RendererIndex: -1
+  m_VolumeLayerMask:
+    serializedVersion: 2
+    m_Bits: 1
+  m_VolumeTrigger: {fileID: 0}
+  m_VolumeFrameworkUpdateModeOption: 2
+  m_RenderPostProcessing: 0
+  m_Antialiasing: 0
+  m_AntialiasingQuality: 2
+  m_StopNaN: 0
+  m_Dithering: 0
+  m_ClearDepth: 1
+  m_AllowXRRendering: 1
+  m_AllowHDROutput: 1
+  m_UseScreenCoordOverride: 0
+  m_ScreenSizeOverride: {x: 0, y: 0, z: 0, w: 0}
+  m_ScreenCoordScaleBias: {x: 0, y: 0, z: 0, w: 0}
+  m_RequiresDepthTexture: 0
+  m_RequiresColorTexture: 0
+  m_TaaSettings:
+    m_Quality: 3
+    m_FrameInfluence: 0.1
+    m_JitterScale: 1
+    m_MipBias: 0
+    m_VarianceClampScale: 0.9
+    m_ContrastAdaptiveSharpening: 0
+  m_Version: 2
 --- !u!1 &1042741199
 GameObject:
   m_ObjectHideFlags: 0
@@ -792,6 +871,7 @@ GameObject:
   - component: {fileID: 1042741202}
   - component: {fileID: 1042741201}
   - component: {fileID: 1042741200}
+  - component: {fileID: 1042741203}
   m_Layer: 0
   m_Name: EventSystem
   m_TagString: Untagged
@@ -860,6 +940,15 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1652712579 &1042741203
+MultiplayerRolesData:
+  m_ObjectHideFlags: 2
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1042741199}
+  m_GameObjectRolesMask: 1
+  m_ComponentsRolesMasks: []
 --- !u!1 &1081071303
 GameObject:
   m_ObjectHideFlags: 0
@@ -872,6 +961,7 @@ GameObject:
   - component: {fileID: 1081071307}
   - component: {fileID: 1081071306}
   - component: {fileID: 1081071305}
+  - component: {fileID: 1081071308}
   m_Layer: 5
   m_Name: InputField (TMP)
   m_TagString: Untagged
@@ -1050,6 +1140,17 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1081071303}
   m_CullTransparentMesh: 1
+--- !u!1652712579 &1081071308
+MultiplayerRolesData:
+  m_ObjectHideFlags: 2
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1081071303}
+  m_GameObjectRolesMask: 1
+  m_ComponentsRolesMasks:
+  - m_Object: {fileID: 1081071307}
+    m_RolesMask: 1
 --- !u!1 &1128421232
 GameObject:
   m_ObjectHideFlags: 0
@@ -1199,6 +1300,7 @@ GameObject:
   - component: {fileID: 1178986043}
   - component: {fileID: 1178986042}
   - component: {fileID: 1178986041}
+  - component: {fileID: 1178986044}
   m_Layer: 5
   m_Name: Button (1)
   m_TagString: Untagged
@@ -1320,6 +1422,17 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1178986039}
   m_CullTransparentMesh: 1
+--- !u!1652712579 &1178986044
+MultiplayerRolesData:
+  m_ObjectHideFlags: 2
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1178986039}
+  m_GameObjectRolesMask: 1
+  m_ComponentsRolesMasks:
+  - m_Object: {fileID: 1178986043}
+    m_RolesMask: 1
 --- !u!1 &1255364696
 GameObject:
   m_ObjectHideFlags: 0
@@ -1332,6 +1445,7 @@ GameObject:
   - component: {fileID: 1255364700}
   - component: {fileID: 1255364699}
   - component: {fileID: 1255364698}
+  - component: {fileID: 1255364701}
   m_Layer: 5
   m_Name: Button
   m_TagString: Untagged
@@ -1453,6 +1567,17 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1255364696}
   m_CullTransparentMesh: 1
+--- !u!1652712579 &1255364701
+MultiplayerRolesData:
+  m_ObjectHideFlags: 2
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1255364696}
+  m_GameObjectRolesMask: 1
+  m_ComponentsRolesMasks:
+  - m_Object: {fileID: 1255364700}
+    m_RolesMask: 1
 --- !u!1 &1270685510
 GameObject:
   m_ObjectHideFlags: 0
@@ -1465,6 +1590,7 @@ GameObject:
   - component: {fileID: 1270685513}
   - component: {fileID: 1270685512}
   - component: {fileID: 1270685511}
+  - component: {fileID: 1270685515}
   m_Layer: 5
   m_Name: Canvas
   m_TagString: Untagged
@@ -1561,6 +1687,15 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
+--- !u!1652712579 &1270685515
+MultiplayerRolesData:
+  m_ObjectHideFlags: 2
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1270685510}
+  m_GameObjectRolesMask: 1
+  m_ComponentsRolesMasks: []
 --- !u!1 &1297815821
 GameObject:
   m_ObjectHideFlags: 0
@@ -1572,6 +1707,7 @@ GameObject:
   - component: {fileID: 1297815822}
   - component: {fileID: 1297815824}
   - component: {fileID: 1297815823}
+  - component: {fileID: 1297815825}
   m_Layer: 5
   m_Name: Text (TMP)
   m_TagString: Untagged
@@ -1698,6 +1834,17 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1297815821}
   m_CullTransparentMesh: 1
+--- !u!1652712579 &1297815825
+MultiplayerRolesData:
+  m_ObjectHideFlags: 2
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1297815821}
+  m_GameObjectRolesMask: 1
+  m_ComponentsRolesMasks:
+  - m_Object: {fileID: 1297815824}
+    m_RolesMask: 1
 --- !u!1 &1398390794
 GameObject:
   m_ObjectHideFlags: 0
@@ -1845,6 +1992,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1444171867}
   - component: {fileID: 1444171866}
+  - component: {fileID: 1444171868}
   m_Layer: 0
   m_Name: GameObject
   m_TagString: Untagged
@@ -1881,6 +2029,17 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1652712579 &1444171868
+MultiplayerRolesData:
+  m_ObjectHideFlags: 2
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1444171865}
+  m_GameObjectRolesMask: 1
+  m_ComponentsRolesMasks:
+  - m_Object: {fileID: 1444171866}
+    m_RolesMask: 1
 --- !u!1 &1726048550
 GameObject:
   m_ObjectHideFlags: 0
@@ -2187,6 +2346,7 @@ GameObject:
   - component: {fileID: 1924384555}
   - component: {fileID: 1924384557}
   - component: {fileID: 1924384556}
+  - component: {fileID: 1924384558}
   m_Layer: 5
   m_Name: title
   m_TagString: Untagged
@@ -2313,6 +2473,17 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1924384554}
   m_CullTransparentMesh: 1
+--- !u!1652712579 &1924384558
+MultiplayerRolesData:
+  m_ObjectHideFlags: 2
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1924384554}
+  m_GameObjectRolesMask: 1
+  m_ComponentsRolesMasks:
+  - m_Object: {fileID: 1924384557}
+    m_RolesMask: 1
 --- !u!1 &1961189481
 GameObject:
   m_ObjectHideFlags: 0

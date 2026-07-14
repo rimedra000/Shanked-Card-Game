@@ -13,5 +13,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_MultiplayerRoleForClassicProfile:
-    m_Keys: []
-    m_Values: 
+    m_Keys:
+    - 4e3c793746204150860bf175a9a41a05
+    - 91d938b35f6f4798811e41f2acf9377f
+    - b9b35072a6f44c2e863f17467ea3dc13
+    - cb423bfea44b4d658edb8bc5d91a3024
+    m_Values: 03000000030000000300000003000000

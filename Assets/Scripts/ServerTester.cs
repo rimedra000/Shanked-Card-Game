@@ -1,4 +1,4 @@
-#if SERVER
+#if CLIENT
 using TMPro;
 using UnityEngine;
 using System.Globalization;

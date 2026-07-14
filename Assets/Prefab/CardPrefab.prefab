@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 93122540169110862}
   - component: {fileID: 3549945895047849266}
   - component: {fileID: 3639857700777345731}
+  - component: {fileID: 2343235297463908307}
   m_Layer: 5
   m_Name: CardPrefab
   m_TagString: Untagged
@@ -151,3 +152,16 @@ MonoBehaviour:
   m_EffectColor: {r: 0, g: 0, b: 0, a: 0.5}
   m_EffectDistance: {x: 0, y: -10}
   m_UseGraphicAlpha: 1
+--- !u!1652712579 &2343235297463908307
+MultiplayerRolesData:
+  m_ObjectHideFlags: 2
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5063390011317731493}
+  m_GameObjectRolesMask: 3
+  m_ComponentsRolesMasks:
+  - m_Object: {fileID: 222563417271599888}
+    m_RolesMask: 1
+  - m_Object: {fileID: 3549945895047849266}
+    m_RolesMask: 1
