@@ -9,10 +9,15 @@ public class MainMenu : MonoBehaviour
     [SerializeField] private Button playButton;
     [SerializeField] private Button hostButton;
 
-    
+    private void Awake()
+    {
+        Screen.autorotateToPortrait =false;
+    }
+
+
     public void SetIP(string ip)
     {
-        if(!NetworkEndpoint.TryParse(ip,7777,out NetworkEndpoint endpoint))
+        if(!NetworkEndpoint.TryParse(ip,GameManager.port,out NetworkEndpoint endpoint))
         {
             playButton.interactable=false;
         }
@@ -33,7 +38,7 @@ public class MainMenu : MonoBehaviour
     public void Host()
     {
         
-        GameManager.networkEndpoint=NetworkEndpoint.LoopbackIpv4.WithPort(7777);
+        GameManager.networkEndpoint=NetworkEndpoint.LoopbackIpv4.WithPort(GameManager.port);
         SceneManager.LoadScene(2);
     }
 #endif

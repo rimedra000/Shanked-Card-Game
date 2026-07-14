@@ -1,37 +1,5 @@
-make card into struct
-
-
-
-
-
-
-
-headers
-
-
-
-first bit - is management;  zero for now
-
-bits 2, 3,  and 4 -   player id (0-7)
-bit 5 is setup
-
-0xxx0
-    000 - shanked (server)
-    001 - play cards from main hand (client)
-    010 - place shown card into main hand (client)
-    011 - place hidden card into main hand (client)
-    100 - swap hand (server)
-    101 - draw cards (server)
-    110
-    111
-
-0xxx1
-    000 - hidden cards (server)
-    001 - shown cards (server)
-    010 - hand cards (server)
-    011 - swap card (byte 2) with card (byte 3) (client)
-    100
-    101
-    110
-    111
-
+voice chat 
+custom card textures
+scrollable hand
+sorted hand
+fix card offset bug

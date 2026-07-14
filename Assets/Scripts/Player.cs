@@ -221,6 +221,8 @@ public class Player : MonoBehaviour
             handCards.Add(MakeCard(card,handCardsTransform));
         }
 
+        SortHand();
+
     }
 
     private void SwapCards(CardStruct[] cards)
@@ -233,6 +235,7 @@ public class Player : MonoBehaviour
         SetCardsInteract(handCards,true);
         SetCardsInteract(shownCards,true);
         button.interactable=false;
+        SortHand();
     }
 
     private void DealHandCards(CardStruct[] cards)
@@ -241,6 +244,7 @@ public class Player : MonoBehaviour
         {
             handCards.Add(MakeCard(card,handCardsTransform));
         }
+        SortHand();
     }
 
     private void DealShownCards(CardStruct[] cards)
@@ -271,6 +275,7 @@ public class Player : MonoBehaviour
         {
             handCards.Add(MakeCard(card,handCardsTransform));
         }
+        SortHand();
     }
 
     private void SwapHand(CardStruct[] cards)
@@ -285,6 +290,8 @@ public class Player : MonoBehaviour
         {
             handCards.Add(MakeCard(card,handCardsTransform));
         }
+
+        SortHand();
     }
 
     private void MoveHiddenCard(CardStruct[] cards)
@@ -429,16 +436,18 @@ public class Player : MonoBehaviour
 
     }
 
+    [SerializeField] private float selectOffset = 10f;
+
     private void DeSelectCard(CardObject card)
     {
         selectedCards.Remove(card);
-        card.transform.Translate(Vector2.down * 5f);
+        card.transform.Translate(Vector2.down * selectOffset);
     }
 
     private void SelectCard(CardObject card)
     {
         selectedCards.Add(card);
-        card.transform.Translate(Vector2.up * 5f);
+        card.transform.Translate(Vector2.up * selectOffset);
     }
 
 
@@ -539,6 +548,19 @@ public class Player : MonoBehaviour
         foreach (CardObject card in cards)
         {
             card.button.interactable = interactable;
+        }
+    }
+
+    private void SortHand()
+    {
+        foreach (CardValue value in GameManager.sortOrder.Reverse())
+        {
+            for (int i = 0; i < handCards.Count; i++)
+            {
+                CardObject card = handCards[i];
+                if(card.cardStruct.value!=value) continue;
+                card.transform.SetSiblingIndex(0);
+            }
         }
     }
 

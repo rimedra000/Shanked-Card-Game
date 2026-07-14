@@ -1,8 +1,10 @@
+using System;
 using System.Collections.Generic;
 using TMPro;
 
 // using System.Linq;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class NetworkedPlayer : MonoBehaviour
 {
@@ -17,8 +19,9 @@ public class NetworkedPlayer : MonoBehaviour
     [SerializeField] private Transform hiddenCardsTransform;
 
     [SerializeField] private TextMeshProUGUI usernameText;
+    [SerializeField] private Image background;
 
-    public int playerID=0;
+    [NonSerialized] public int playerID=0;
     private bool turn=false;
 
     private void Awake()
@@ -26,17 +29,29 @@ public class NetworkedPlayer : MonoBehaviour
         GameManager.clientBehaviour.onDataReceived += ReceiveData;
     }
 
-    private void ReceiveData(object _, Data e)
+    private void ReceiveData(object _, Data data)
     {
-        if (e.dataHeader.gameEvent==GameEvent.StartTurn)
+        if (data.dataHeader.gameEvent==GameEvent.StartTurn)
         {
-            turn=e.dataHeader.player==playerID;
+            turn=data.dataHeader.player==playerID;
+            if (turn)
+            {
+                var c = background.color;
+                c.a=0;
+                background.color=c;
+            }
+            else
+            {
+                var c = background.color;
+                c.a=1;
+                background.color=c;
+            }
             return;
         }
 
-        if (e.dataHeader.player!=playerID) return;
-        CardStruct[] cards = e.cards;
-        switch (e.dataHeader.gameEvent)
+        if (data.dataHeader.player!=playerID) return;
+        CardStruct[] cards = data.cards;
+        switch (data.dataHeader.gameEvent)
         {
             case GameEvent.PlayCards:
                 PlayCards(cards);

@@ -7,9 +7,27 @@ public static class GameManager
     // public static Func<CardStruct,bool> ValidCard;
     public static PlayPile playPile;
 
-    public static Unity.Networking.Transport.NetworkEndpoint networkEndpoint = Unity.Networking.Transport.NetworkEndpoint.LoopbackIpv4.WithPort(7777);
+    public static Unity.Networking.Transport.NetworkEndpoint networkEndpoint = Unity.Networking.Transport.NetworkEndpoint.LoopbackIpv4.WithPort(port);
 
     public static string username="";
+    public const int port =7777;
+    //high to low
+    public static CardValue[] sortOrder = new []{
+        CardValue.Joker,
+        CardValue.Ace,
+        CardValue.King,
+        CardValue.Queen,
+        CardValue.Jack,
+        CardValue.Ten,
+        CardValue.Nine,
+        CardValue.Eight,
+        CardValue.Seven,
+        CardValue.Six,
+        CardValue.Five,
+        CardValue.Four,
+        CardValue.Three,
+        CardValue.Two
+    };
     // public static DrawPile drawPile;
     // public static DiscardPile discardPile;
 

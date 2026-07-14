@@ -178,7 +178,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 0, b: 0, a: 0.392}
+  m_Color: {r: 0.342, g: 0.342, b: 0.342, a: 0}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -212,6 +212,7 @@ MonoBehaviour:
   shownCardsTransform: {fileID: 9213997335171954381}
   hiddenCardsTransform: {fileID: 6244060585662666358}
   usernameText: {fileID: 4635831571544439070}
+  background: {fileID: 1005836758178688282}
   playerID: 0
 --- !u!1 &6838934826476625370
 GameObject:
