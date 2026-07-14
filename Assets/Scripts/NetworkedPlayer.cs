@@ -1,3 +1,4 @@
+#if CLIENT
 using System;
 using System.Collections.Generic;
 using TMPro;
@@ -205,3 +206,4 @@ public class NetworkedPlayer : MonoBehaviour
 
     
 }
+#endif

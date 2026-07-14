@@ -1,3 +1,4 @@
+#if CLIENT
 using UnityEngine;
 
 public class CardObjectTester : MonoBehaviour
@@ -13,3 +14,4 @@ public class CardObjectTester : MonoBehaviour
         cardObject.setCardStruct(new CardStruct(cardValue,cardSuit,cardDeck));
     }
 }
+#endif

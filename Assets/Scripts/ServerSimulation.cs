@@ -66,7 +66,7 @@ public class ServerSimulation
 
     }
 
-    public bool AddPlayer(Data data)
+    private bool AddPlayer(Data data)
     {
         if(!isSetupTime) return false;
         
@@ -527,4 +527,10 @@ public class ServerSimulation
         return true;
     }
 }
+
+public interface ServerSimulator
+{
+    public bool ReceiveData(Data data);
+}
+
 #endif

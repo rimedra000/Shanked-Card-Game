@@ -1,3 +1,4 @@
+#if CLIENT
 using UnityEngine;
 
 public class DrawPile : MonoBehaviour
@@ -35,3 +36,4 @@ public class DrawPile : MonoBehaviour
     }
 
 }
+#endif

@@ -1,3 +1,4 @@
+#if CLIENT
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -26,3 +27,4 @@ public class HorizontalCardOverlapper : MonoBehaviour
         horizontalLayoutGroup.spacing=extra;    
     }
 }
+#endif

@@ -1,3 +1,4 @@
+#if CLIENT
 using Unity.Networking.Transport;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -48,3 +49,4 @@ public class MainMenu : MonoBehaviour
         SceneManager.LoadScene(1);
     }
 }
+#endif

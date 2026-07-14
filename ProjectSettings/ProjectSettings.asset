@@ -691,8 +691,9 @@ PlayerSettings:
   webWasm2023: 0
   webEnableSubmoduleStrippingCompatibility: 0
   scriptingDefineSymbols:
-    Android: SERVER
-    Standalone: SERVER
+    Android: SERVER;CLIENT
+    Standalone: SERVER;CLIENT
+    WebGL: CLIENT
   additionalCompilerArguments: {}
   platformArchitecture: {}
   scriptingBackend:

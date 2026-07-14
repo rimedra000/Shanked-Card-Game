@@ -1,3 +1,4 @@
+#if CLIENT
 using UnityEngine;
 using Unity.Networking.Transport;
 using Unity.Collections;
@@ -95,3 +96,4 @@ public class ClientBehaviour : MonoBehaviour
         bytes.Dispose();
     }
 }
+#endif

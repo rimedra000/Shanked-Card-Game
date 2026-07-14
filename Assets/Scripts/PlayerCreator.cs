@@ -1,3 +1,4 @@
+#if CLIENT
 using UnityEngine;
 
 public class PlayerCreator : MonoBehaviour
@@ -26,3 +27,4 @@ public class PlayerCreator : MonoBehaviour
 
 
 }
+#endif

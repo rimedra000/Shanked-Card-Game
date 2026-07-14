@@ -32,7 +32,7 @@ public class ServerBehaviour : MonoBehaviour
         }
         m_Driver.Listen();
 
-        serverSimulation=new(sendData);
+        serverSimulation=new(SendData);
     }
 
     void OnDestroy()
@@ -99,7 +99,7 @@ public class ServerBehaviour : MonoBehaviour
 
     }
 
-    private void sendData(Data data,int id)
+    private void SendData(Data data,int id)
     {
         // Debug.Log(data);
         m_Driver.BeginSend(m_Pipeline, m_Connections[id], out var writer);
@@ -107,5 +107,11 @@ public class ServerBehaviour : MonoBehaviour
         m_Driver.EndSend(writer);
 
     }
+}
+
+public interface ServerSender
+{
+    public void SendData(Data data,int id);
+    
 }
 #endif

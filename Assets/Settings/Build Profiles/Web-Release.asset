@@ -728,6 +728,7 @@ MonoBehaviour:
     - line: '|   scriptingDefineSymbols:'
     - line: '|     Android: SERVER'
     - line: '|     Standalone: SERVER'
+    - line: '|     WebGL: CLIENT'
     - line: '|   additionalCompilerArguments: {}'
     - line: '|   platformArchitecture: {}'
     - line: '|   scriptingBackend:'

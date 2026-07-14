@@ -1,3 +1,4 @@
+#if CLIENT
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -42,3 +43,4 @@ public class DiscardPile : MonoBehaviour
     
     
 }
+#endif
