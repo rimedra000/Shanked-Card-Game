@@ -37,7 +37,7 @@ public static class GameManager
     public static Unity.Networking.Transport.NetworkEndpoint networkEndpoint = Unity.Networking.Transport.NetworkEndpoint.LoopbackIpv4.WithPort(port);
 
     
-    public const int port =7777;
+    public const int port =31090;
     //high to low
     
 

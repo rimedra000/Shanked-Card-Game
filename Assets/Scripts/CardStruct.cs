@@ -1,4 +1,4 @@
-[System.Serializable]
+// [System.Serializable]
 public readonly struct CardStruct  
 {
     private readonly byte id;
