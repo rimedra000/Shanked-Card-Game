@@ -1,5 +1,4 @@
 #if SERVER
-#define SHORT_CARDS
 using System;
 using System.Collections.Generic;
 using System.Linq;
