@@ -226,7 +226,7 @@ public class ServerSimulation
         SendToAll(data);
 
 
-        if(turn==id) StartTurn();
+        if(turn==id&&!isSetupTime) StartTurn();
         return true;
     }
 
@@ -387,12 +387,14 @@ public class ServerSimulation
             {
                 otherIdx--;
                 otherIdx%=(byte)players.Length;
-                otherIdx=Math.Abs(otherIdx);
+                if(otherIdx<0)otherIdx+=players.Length;
                 if (HasCards(players[otherIdx]))
                 {
                     j++;
                 }
             }
+
+            UnityEngine.Debug.Log($"i:{i} j:{j} offset:{offset} otheridx:{otherIdx}");
 
             players[i].mainHand=handsCopy[otherIdx];
             Data data = new Data(new DataHeader((byte)i,GameEvent.SwapHand),players[i].mainHand.ToArray());
@@ -442,7 +444,7 @@ public class ServerSimulation
             }
         }
 
-        SendToAll(new Data(new DataHeader(turn,GameEvent.StartTurn),Array.Empty<CardStruct>()));
+        SendToAll(new Data(new DataHeader(turn,GameEvent.StartTurn)));
 
         turnOffset=1;
 
