@@ -1,10 +1,12 @@
 #if SERVER
+#define SHORT_CARDS
 using System;
 using System.Collections.Generic;
 using System.Linq;
 public class ServerSimulation
 {
     private Action<Data,int> SendData;
+    private Action GameEnd;
 
     private List<CardStruct> playPile = new();
     private Stack<CardStruct> drawPile = new();
@@ -20,13 +22,22 @@ public class ServerSimulation
 
     private List<Data> pastData =new();
 
-    public ServerSimulation(Action<Data,int> SendData)
+    public ServerSimulation(Action<Data,int> SendData,Action GameEnd)
     {
         this.SendData=SendData;
+        this.GameEnd=GameEnd;
 
-        CardStruct[] tempCards=new CardStruct[108];
+        CardStruct[] tempCards=new CardStruct[
+            #if !SHORT_CARDS
+            108
+            #else
+            14
+            #endif
+            ];
         {
             int i=0;
+            
+            #if !SHORT_CARDS
             //create all cards
             foreach (CardDeck deck in Enum.GetValues(typeof(CardDeck)))
             {
@@ -40,6 +51,14 @@ public class ServerSimulation
                     }
                 }
             }
+            #else
+            foreach (CardValue value in Enum.GetValues(typeof(CardValue)))
+            {
+                if(value == CardValue.Blank) continue;
+                tempCards[i] = new CardStruct(value,CardSuit.Spades,CardDeck.One);
+                i++;
+            }
+            #endif
         }
         //shuffle all cards
         Random r = new Random();
@@ -407,6 +426,9 @@ public class ServerSimulation
 
         if(!players.Any(player => HasCards(player)))
         {
+            GameEnd();
+
+            
             return;        
             //game done
         }

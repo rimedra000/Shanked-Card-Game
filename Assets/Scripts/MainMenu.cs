@@ -13,6 +13,7 @@ public class MainMenu : MonoBehaviour
     private void Awake()
     {
         Screen.autorotateToPortrait =false;
+        Screen.autorotateToLandscapeLeft=true;
         #if !SERVER
         hostButton.gameObject.SetActive(false);
         #endif

@@ -4,6 +4,8 @@ using Unity.Collections;
 using Unity.Networking.Transport;
 using System.Collections.Generic;
 using System;
+using UnityEngine.SceneManagement;
+using System.Collections;
 
 public class ServerBehaviour : MonoBehaviour
 {
@@ -35,7 +37,22 @@ public class ServerBehaviour : MonoBehaviour
         }
         m_Driver.Listen();
 
-        serverSimulation=new(SendData);
+        serverSimulation=new(SendData,GameEnd);
+    }
+
+    private void GameEnd()
+    {
+        StartCoroutine(nameof(GameEnd2));
+        Debug.Log("game over");
+    }
+    private IEnumerator GameEnd2()
+    {
+        yield return new WaitForSeconds(5);
+        #if CLIENT
+            SceneManager.LoadScene(0);
+        #else
+            Application.Quit();
+        #endif
     }
 
     void OnDestroy()
