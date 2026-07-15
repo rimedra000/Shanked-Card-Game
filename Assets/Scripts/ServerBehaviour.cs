@@ -32,7 +32,7 @@ public class ServerBehaviour : MonoBehaviour
         var endpoint = NetworkEndpoint.AnyIpv4.WithPort(GameManager.port);
         if (m_Driver.Bind(endpoint) != 0)
         {
-            Debug.LogError("Failed to bind to port 7777.");
+            Debug.LogError("Failed to bind to port.");
             return;
         }
         m_Driver.Listen();
@@ -80,6 +80,10 @@ public class ServerBehaviour : MonoBehaviour
         NetworkConnection c;
         while ((c = m_Driver.Accept()) != default)
         {
+            if(m_Connections.Length>=8)
+            {
+                break;
+            }
             m_Connections.Add(c);
             Debug.Log($"client {m_Connections.Length-1} connected (s)");
             Data data = new Data(new DataHeader((byte)(m_Connections.Length-1),GameEvent.AddPlayer),Array.Empty<CardStruct>());
