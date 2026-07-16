@@ -28,6 +28,9 @@ public class NetworkedPlayer : MonoBehaviour
     private void Awake()
     {
         GameManager.clientBehaviour.onDataReceived += ReceiveData;
+        var c = background.color;
+        c.a=0;
+        background.color=c;
     }
 
     private void ReceiveData(object _, Data data)
@@ -89,7 +92,17 @@ public class NetworkedPlayer : MonoBehaviour
             case GameEvent.RemovePlayer:
                 RemovePlayer();
                 break;
+            case GameEvent.Ready:
+                Ready();
+                break;
         }
+    }
+
+    private void Ready()
+    {
+        var c = background.color;
+        c.a=c.a==0?1:0;
+        background.color=c;
     }
 
     private void RemovePlayer()
