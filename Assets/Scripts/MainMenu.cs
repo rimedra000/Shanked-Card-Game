@@ -1,4 +1,5 @@
 #if CLIENT
+using TMPro;
 using Unity.Networking.Transport;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -9,11 +10,13 @@ public class MainMenu : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     [SerializeField] private Button playButton;
     [SerializeField] private Button hostButton;
+    [SerializeField] private TMP_InputField ipField;
+    [SerializeField] private TMP_InputField nameField;
 
     private void Awake()
     {
-        Screen.autorotateToPortrait =false;
-        Screen.autorotateToLandscapeLeft=true;
+        ipField.text=GameManager.networkEndpoint.Address.Split(":")[0];
+        nameField.text=GameManager.username;
         #if !SERVER
         hostButton.gameObject.SetActive(false);
         #endif
@@ -42,7 +45,6 @@ public class MainMenu : MonoBehaviour
 #if SERVER
     public void Host()
     {
-        
         GameManager.networkEndpoint=NetworkEndpoint.LoopbackIpv4.WithPort(GameManager.port);
         SceneManager.LoadScene(2);
     }

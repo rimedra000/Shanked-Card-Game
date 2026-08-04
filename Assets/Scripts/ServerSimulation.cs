@@ -1,11 +1,14 @@
 #if SERVER
+#define SHORT_CARDS
 using System;
 using System.Collections.Generic;
 using System.Linq;
-public class ServerSimulation
+public class ServerSimulation : ServerSimulator
 {
-    private Action<Data,int> SendData;
-    private Action GameEnd;
+    // private Action<Data,int> SendData;
+    // private Action GameEnd;
+
+    private ServerSender serverSender;
 
     private List<CardStruct> playPile = new();
     private Stack<CardStruct> drawPile = new();
@@ -21,10 +24,11 @@ public class ServerSimulation
 
     private List<Data> pastData =new();
 
-    public ServerSimulation(Action<Data,int> SendData,Action GameEnd)
+    public ServerSimulation(ServerSender serverSender)
     {
-        this.SendData=SendData;
-        this.GameEnd=GameEnd;
+        this.serverSender=serverSender;
+        // this.SendData=SendData;
+        // this.GameEnd=GameEnd;
 
         CardStruct[] tempCards=new CardStruct[
             #if !SHORT_CARDS
@@ -81,6 +85,11 @@ public class ServerSimulation
         public List<CardStruct> shownCards=new();
         public List<CardStruct> hiddenCards=new();
         public bool ready=false;
+        public bool connected=true;
+
+        public long connectionID =0;
+
+        public int realId=-1;
 
     }
 
@@ -92,19 +101,23 @@ public class ServerSimulation
 
         if (players[id]!=null) return false;
 
-        Player player = new Player();
-        
+        Player player = new Player
+        {
+            connectionID = BitConverter.ToInt64(data.otherBytes[0..8])
+        };
+
         players[id] = player;
 
 
 
         foreach (Data oldData in pastData)
         {
-            SendData(isPrivateData(oldData)?CensorData(oldData):oldData,id);
+            serverSender.SendData(isPrivateData(oldData)?CensorData(oldData):oldData,id);
         }
-
-
-        SendToAll(data);
+        Data newData=new(data.dataHeader,data.otherBytes[8..]);
+        
+        
+        SendToAll(newData);
 
         DealHandCards(id);
         DealShownCards(id);
@@ -153,14 +166,14 @@ public class ServerSimulation
     private void SendToAll(Data data)
     {
         int id = data.dataHeader.player;
-        if(players[id]!=null)SendData(data,id);
+        if(players[id]!=null)serverSender.SendData(data,id);
 
         Data CensoredData = isPrivateData(data)?CensorData(data):data;
         for (int i = 0; i < players.Length; i++)
         {
             if(i==id) continue;
             if(players[i]==null) continue;
-            SendData(CensoredData,i);
+            serverSender.SendData(CensoredData,i);
         }
         pastData.Add(data);
     }
@@ -170,7 +183,7 @@ public class ServerSimulation
         return new Data(data.dataHeader,data.cards.Select(c=>c.Censored()).ToArray());
     }
 
-    public bool ReceiveData(Data data)
+    public bool ReceiveData(Data data,int trueId)
     {
         byte id = data.dataHeader.player;
         GameEvent gameEvent = data.dataHeader.gameEvent;
@@ -425,9 +438,9 @@ public class ServerSimulation
     {
         //TODO: account for finished players
 
-        if(!players.Any(player => HasCards(player)))
+        if(!players.Any(player => HasCards(player)&&(player?.connected??false)))
         {
-            GameEnd();
+            serverSender.EndGame();
 
             
             return;        
@@ -444,9 +457,18 @@ public class ServerSimulation
             }
         }
 
+        turnOffset=1;
+        if(!players[turn].connected)
+        {
+            players[turn]=null;
+            StartTurn();
+            return;
+        }
+
+
         SendToAll(new Data(new DataHeader(turn,GameEvent.StartTurn)));
 
-        turnOffset=1;
+        
 
     }
 
@@ -549,11 +571,27 @@ public class ServerSimulation
         StartTurn();
         return true;
     }
+
+    public Data? NewConnection(int id)
+    {
+        return null;
+        throw new NotImplementedException();
+    }
+
+    public void PlayerDisconnect(int id)
+    {
+        throw new NotImplementedException();
+    }
+
 }
 
 public interface ServerSimulator
 {
-    public bool ReceiveData(Data data);
+    public bool ReceiveData(Data data,int id);
+
+    public Data? NewConnection(int id);
+
+    public void PlayerDisconnect(int id);
 }
 
 #endif

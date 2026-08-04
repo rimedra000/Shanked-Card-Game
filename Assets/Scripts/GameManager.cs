@@ -26,7 +26,7 @@ public static class GameManager
     };
     // public static DrawPile drawPile;
     // public static DiscardPile discardPile;
-
+    public static long connectionID =0;
 
     public static Sprite getSpriteFromCardStruct(CardStruct cardStruct)
     {
@@ -37,7 +37,7 @@ public static class GameManager
     public static Unity.Networking.Transport.NetworkEndpoint networkEndpoint = Unity.Networking.Transport.NetworkEndpoint.LoopbackIpv4.WithPort(port);
 
     
-    public const int port =31090;
+    public static ushort port =31090;
     //high to low
     
 

@@ -2,12 +2,11 @@
 using UnityEngine;
 using Unity.Collections;
 using Unity.Networking.Transport;
-using System.Collections.Generic;
 using System;
 using UnityEngine.SceneManagement;
 using System.Collections;
 
-public class ServerBehaviour : MonoBehaviour
+public class ServerBehaviour : MonoBehaviour , ServerSender
 {
     NetworkDriver m_Driver;
     NativeList<NetworkConnection> m_Connections;
@@ -17,7 +16,7 @@ public class ServerBehaviour : MonoBehaviour
     #if CLIENT
     private void Awake()
     {
-        UnityEngine.SceneManagement.SceneManager.LoadScene(1,UnityEngine.SceneManagement.LoadSceneMode.Additive);
+        SceneManager.LoadScene(1, LoadSceneMode.Additive);
     }
 
     #endif
@@ -37,21 +36,22 @@ public class ServerBehaviour : MonoBehaviour
         }
         m_Driver.Listen();
 
-        serverSimulation=new(SendData,GameEnd);
+        serverSimulation=new(this);
     }
 
-    private void GameEnd()
+    public void EndGame()
     {
         StartCoroutine(nameof(GameEnd2));
         Debug.Log("game over");
     }
     private IEnumerator GameEnd2()
     {
-        yield return new WaitForSeconds(5);
+        yield return new WaitForSeconds(3);
         #if CLIENT
             SceneManager.LoadScene(0);
         #else
-            Application.Quit();
+            // Application.Quit();
+            SceneManager.LoadScene(2);
         #endif
     }
 
@@ -80,16 +80,13 @@ public class ServerBehaviour : MonoBehaviour
         NetworkConnection c;
         while ((c = m_Driver.Accept()) != default)
         {
-            if(m_Connections.Length>=8)
-            {
-                break;
-            }
+            if(m_Connections.Length>=8) break;
             m_Connections.Add(c);
             Debug.Log($"client {m_Connections.Length-1} connected (s)");
-            Data data = new Data(new DataHeader((byte)(m_Connections.Length-1),GameEvent.AddPlayer),Array.Empty<CardStruct>());
-            m_Driver.BeginSend(m_Pipeline, c, out var writer);
-            writer.WriteBytes(data.ToBytes());
-            m_Driver.EndSend(writer);
+
+            Data data = new Data(new DataHeader((byte)(m_Connections.Length-1),GameEvent.AddPlayer));
+
+            SendData(data,m_Connections.Length-1);
             // serverSimulation.AddPlayer();
 
             Debug.Log("Accepted a connection.");
@@ -105,16 +102,15 @@ public class ServerBehaviour : MonoBehaviour
                 {
                     var nativebytes = new NativeArray<byte>(stream.Length,Allocator.Temp);
                     stream.ReadBytes(nativebytes);
-                    var bytes = nativebytes.ToArray();
+                    var data = new Data(nativebytes.ToArray());
                     nativebytes.Dispose();
-                    var data = new Data(bytes);
-                    serverSimulation.ReceiveData(data);
+                    serverSimulation.ReceiveData(data,i);
                 }
                 else if (cmd == NetworkEvent.Type.Disconnect)
                 {
                     Debug.Log("Client disconnected from the server.");
                     var data = new Data(new DataHeader((byte)i,GameEvent.RemovePlayer));
-                    serverSimulation.ReceiveData(data);
+                    serverSimulation.ReceiveData(data,i);
                     m_Connections[i] = default;
                     break;
                 }
@@ -123,7 +119,7 @@ public class ServerBehaviour : MonoBehaviour
 
     }
 
-    private void SendData(Data data,int id)
+    public void SendData(Data data,int id)
     {
         // Debug.Log(data);
         m_Driver.BeginSend(m_Pipeline, m_Connections[id], out var writer);
@@ -136,6 +132,7 @@ public class ServerBehaviour : MonoBehaviour
 public interface ServerSender
 {
     public void SendData(Data data,int id);
+    public void EndGame();
     
 }
 #endif
