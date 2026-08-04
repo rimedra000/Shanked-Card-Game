@@ -156,8 +156,20 @@ public class Player : MonoBehaviour
         playerID=data.dataHeader.player;
         readyButton.interactable=true;
         
-        byte[] array = System.Text.Encoding.UTF8.GetBytes(GameManager.username);
-        SendData(new Data(new DataHeader((byte)playerID,GameEvent.AddPlayer),array));
+        byte[] name = System.Text.Encoding.UTF8.GetBytes(GameManager.username);
+        byte[] connectionId= new byte[8];
+        if (GameManager.connectionID==0)
+        {
+            new System.Random().NextBytes(connectionId);
+            GameManager.connectionID = BitConverter.ToInt64(connectionId);    
+        }
+        else
+        {
+            connectionId=BitConverter.GetBytes(GameManager.connectionID);
+        }
+        
+        byte[] outdata = connectionId.Concat(name).ToArray();
+        SendData(new Data(new DataHeader((byte)playerID,GameEvent.AddPlayer),outdata));
     }
 
     private void StartTurn()
