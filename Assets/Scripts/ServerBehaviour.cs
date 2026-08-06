@@ -51,7 +51,7 @@ public class ServerBehaviour : MonoBehaviour , ServerSender
             SceneManager.LoadScene(0);
         #else
             // Application.Quit();
-            SceneManager.LoadScene(2);
+            SceneManager.LoadScene(0);
         #endif
     }
 
