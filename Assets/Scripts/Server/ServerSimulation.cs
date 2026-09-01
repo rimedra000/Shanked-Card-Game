@@ -1,4 +1,3 @@
-#if SERVER
 //#define SHORT_CARDS
 using System;
 using System.Collections.Generic;
@@ -668,5 +667,3 @@ public interface ServerSimulator
     public bool GameStarted();
 
 }
-
-#endif

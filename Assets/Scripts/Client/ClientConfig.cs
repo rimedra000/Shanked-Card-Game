@@ -1,12 +1,7 @@
 using UnityEngine;
 
-public static class GameManager
+public static class ClientConfig
 {
-    #if CLIENT
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    public static ClientBehaviour clientBehaviour;
-    // public static Func<CardStruct,bool> ValidCard;
-    public static PlayPile playPile;
     public static string username="";
     public static CardValue[] sortOrder = new []{
         CardValue.Joker,
@@ -33,17 +28,7 @@ public static class GameManager
         if(cardStruct.value==CardValue.Blank) return Resources.Load<Sprite>($"Card Art/Back/0");
         return Resources.Load<Sprite>($"Card Art/{cardStruct.value}/0");
     }
-    #endif
+
     public static ushort port =31090;
     public static Unity.Networking.Transport.NetworkEndpoint networkEndpoint = Unity.Networking.Transport.NetworkEndpoint.LoopbackIpv4.WithPort(port);
-
-    
-    
-    //high to low
-    static GameManager()
-    {
-        // networkEndpoint=Unity.Networking.Transport.NetworkEndpoint.LoopbackIpv4.WithPort(port);
-    }
-
-
 }

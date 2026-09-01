@@ -1,3 +1,5 @@
 ﻿<Solution>
-  <Project Path="Assembly-CSharp.csproj" />
+  <Project Path="ClientAssembly.csproj" />
+  <Project Path="CommonAssembly.csproj" />
+  <Project Path="ServerAssembly.csproj" />
 </Solution>

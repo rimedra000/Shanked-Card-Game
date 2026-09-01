@@ -1,0 +1,27 @@
+{
+    "name": "ClientAssembly",
+    "rootNamespace": "",
+    "references": [
+        "GUID:f2d49d9fa7e7eb3418e39723a7d3b92f",
+        "GUID:6055be8ebefd69e48b49212b09b47b2f",
+        "GUID:a022ba36d454e1b37bb250e08bd293b4",
+        "GUID:e0cd26848372d4e5c891c569017e11f1"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [
+        "LinuxStandalone64Server",
+        "CloudRendering",
+        "macOSStandaloneServer",
+        "WindowsStandalone32Server",
+        "WindowsStandalone64Server"
+    ],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [
+        "CLIENT"
+    ],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

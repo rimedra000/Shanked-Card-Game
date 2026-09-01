@@ -1,8 +1,7 @@
-#if CLIENT
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-
+//TODO: fix a lot
 public class ClientSimulation : MonoBehaviour
 {
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -94,4 +93,3 @@ public class ClientSimulation : MonoBehaviour
 
     }
 }
-#endif

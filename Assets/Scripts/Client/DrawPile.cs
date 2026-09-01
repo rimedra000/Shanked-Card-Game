@@ -1,4 +1,3 @@
-#if CLIENT
 using UnityEngine;
 
 public class DrawPile : MonoBehaviour
@@ -10,7 +9,7 @@ public class DrawPile : MonoBehaviour
     
     private void Start()
     {
-        GameManager.clientBehaviour.onDataReceived += ReceiveData;
+        ClientBehaviour.instance.onDataReceived += ReceiveData;
         for (int i = 0; i < 108; i++)
         {
             Instantiate(cardPrefab,transform);
@@ -38,4 +37,3 @@ public class DrawPile : MonoBehaviour
     }
 
 }
-#endif

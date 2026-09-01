@@ -1,4 +1,3 @@
-#if CLIENT
 using UnityEngine;
 using Unity.Networking.Transport;
 using Unity.Collections;
@@ -7,6 +6,7 @@ using System;
 
 public class ClientBehaviour : MonoBehaviour
 {
+    public static ClientBehaviour instance;
     NetworkDriver m_Driver;
     NetworkConnection m_Connection;
 
@@ -15,7 +15,8 @@ public class ClientBehaviour : MonoBehaviour
     public event EventHandler<Data> onDataReceived;
 
     private void Awake() {
-        GameManager.clientBehaviour= this;
+        // GameManager.clientBehaviour= this;
+        instance=this;
     }
 
     private void Start()
@@ -23,7 +24,7 @@ public class ClientBehaviour : MonoBehaviour
         Debug.Log("Client start.");
         m_Driver = NetworkDriver.Create(new WebSocketNetworkInterface());
         m_Pipeline = m_Driver.CreatePipeline(typeof(ReliableSequencedPipelineStage));
-        var endpoint = GameManager.networkEndpoint;
+        var endpoint = ClientConfig.networkEndpoint;
         m_Connection = m_Driver.Connect(endpoint);
     }
 
@@ -96,4 +97,3 @@ public class ClientBehaviour : MonoBehaviour
         bytes.Dispose();
     }
 }
-#endif

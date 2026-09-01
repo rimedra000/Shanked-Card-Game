@@ -1,4 +1,3 @@
-#if CLIENT
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -163,7 +162,7 @@ public class Player : MonoBehaviour
         playerID=data.GetOtherEventData().header.miscData;
         readyButton.interactable=true;
         
-        byte[] name = System.Text.Encoding.UTF8.GetBytes(GameManager.username);   
+        byte[] name = System.Text.Encoding.UTF8.GetBytes(ClientConfig.username);   
         SendData(new OtherEventData(new OtherEventDataHeader((byte)playerID,OtherEvent.AddPlayer),name));
     }
 
@@ -565,7 +564,7 @@ public class Player : MonoBehaviour
 
     private void SortHand()
     {
-        foreach (CardValue value in GameManager.sortOrder.Reverse())
+        foreach (CardValue value in ClientConfig.sortOrder.Reverse())
         {
             for (int i = 0; i < handCards.Count; i++)
             {
@@ -579,4 +578,3 @@ public class Player : MonoBehaviour
 
 
 }
-#endif

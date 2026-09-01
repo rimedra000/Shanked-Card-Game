@@ -1,4 +1,3 @@
-#if CLIENT
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,7 +25,7 @@ public class PlayPile : MonoBehaviour
     private void Awake() {
         // instance=this;
         // cardHands=FindObjectsByType<Player>(FindObjectsSortMode.None);
-        GameManager.playPile=this;
+        // GameManager.playPile=this;
         
     }
 
@@ -75,7 +74,7 @@ public class PlayPile : MonoBehaviour
 
     private void Start()
     {
-        GameManager.clientBehaviour.onDataReceived += ReceiveData;
+        ClientBehaviour.instance.onDataReceived += ReceiveData;
         // cardHands[cardHandIndex].StartTurn();
     }
 
@@ -104,5 +103,3 @@ public class PlayPile : MonoBehaviour
 
 
 }
-
-#endif

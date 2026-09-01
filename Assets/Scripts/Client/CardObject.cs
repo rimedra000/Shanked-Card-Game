@@ -1,4 +1,3 @@
-#if CLIENT
 using System;
 using UnityEngine;
 using UnityEngine.UI;
@@ -33,16 +32,15 @@ public class CardObject : MonoBehaviour
 
     public void setCardStruct(CardStruct card)
     {
-        image.sprite=GameManager.getSpriteFromCardStruct(card);
+        image.sprite=ClientConfig.getSpriteFromCardStruct(card);
         cardStruct=card;
     }
 
     public void setCardStructHidden(CardStruct card)
     {
-        image.sprite=GameManager.getSpriteFromCardStruct(card.Censored());
+        image.sprite=ClientConfig.getSpriteFromCardStruct(card.Censored());
         cardStruct=card;
     }
 
 
 }
-#endif

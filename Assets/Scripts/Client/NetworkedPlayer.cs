@@ -1,4 +1,3 @@
-#if CLIENT
 using System;
 using System.Collections.Generic;
 using TMPro;
@@ -27,7 +26,7 @@ public class NetworkedPlayer : MonoBehaviour
 
     private void Awake()
     {
-        GameManager.clientBehaviour.onDataReceived += ReceiveData;
+        ClientBehaviour.instance.onDataReceived += ReceiveData;
         var c = background.color;
         c.a=0;
         background.color=c;
@@ -117,7 +116,7 @@ public class NetworkedPlayer : MonoBehaviour
 
     private void RemovePlayer()
     {
-        GameManager.clientBehaviour.onDataReceived -= ReceiveData;
+        ClientBehaviour.instance.onDataReceived -= ReceiveData;
         
         Destroy(gameObject);
     }
@@ -229,4 +228,3 @@ public class NetworkedPlayer : MonoBehaviour
 
     
 }
-#endif

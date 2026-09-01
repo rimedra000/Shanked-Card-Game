@@ -1,4 +1,3 @@
-#if CLIENT
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,7 +15,7 @@ public class DiscardPile : MonoBehaviour
 
     private void Start() {
         // instance = this;
-        GameManager.clientBehaviour.onDataReceived += ReceiveData;
+        ClientBehaviour.instance.onDataReceived += ReceiveData;
     }
 
     private void ReceiveData(object _, Data data)
@@ -44,4 +43,3 @@ public class DiscardPile : MonoBehaviour
     
     
 }
-#endif

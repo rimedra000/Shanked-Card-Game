@@ -1,4 +1,3 @@
-#if CLIENT
 using UnityEngine;
 
 public class PlayerCreator : MonoBehaviour
@@ -8,7 +7,7 @@ public class PlayerCreator : MonoBehaviour
     private int a=-1;
     void Start()
     {
-        GameManager.clientBehaviour.onDataReceived += ReceiveData;
+        ClientBehaviour.instance.onDataReceived += ReceiveData;
     }
 
     private void ReceiveData(object _, Data data)
@@ -29,4 +28,3 @@ public class PlayerCreator : MonoBehaviour
 
 
 }
-#endif

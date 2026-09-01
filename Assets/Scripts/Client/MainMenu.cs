@@ -1,4 +1,3 @@
-#if CLIENT
 using TMPro;
 using Unity.Networking.Transport;
 using UnityEngine;
@@ -15,8 +14,8 @@ public class MainMenu : MonoBehaviour
 
     private void Awake()
     {
-        ipField.text=GameManager.networkEndpoint.Address.Split(":")[0];
-        nameField.text=GameManager.username;
+        ipField.text=ClientConfig.networkEndpoint.Address.Split(":")[0];
+        nameField.text=ClientConfig.username;
         #if !SERVER
         hostButton.gameObject.SetActive(false);
         #endif
@@ -25,27 +24,27 @@ public class MainMenu : MonoBehaviour
 
     public void SetIP(string ip)
     {
-        if(!NetworkEndpoint.TryParse(ip,GameManager.port,out NetworkEndpoint endpoint))
+        if(!NetworkEndpoint.TryParse(ip,ClientConfig.port,out NetworkEndpoint endpoint))
         {
             playButton.interactable=false;
         }
         else
         {
-            GameManager.networkEndpoint=endpoint;
+            ClientConfig.networkEndpoint=endpoint;
             playButton.interactable=true;
         }
     }
 
     public void SetName(string name)
     {
-        GameManager.username=name;
+        ClientConfig.username=name;
     }
 
 
 #if SERVER
     public void Host()
     {
-        GameManager.networkEndpoint=NetworkEndpoint.LoopbackIpv4.WithPort(GameManager.port);
+        ClientConfig.networkEndpoint=NetworkEndpoint.LoopbackIpv4.WithPort(ClientConfig.port);
         SceneManager.LoadScene(2);
     }
 #endif
@@ -55,4 +54,3 @@ public class MainMenu : MonoBehaviour
         SceneManager.LoadScene(1);
     }
 }
-#endif

@@ -1,8 +1,6 @@
-#if SERVER
 using UnityEngine;
 using Unity.Collections;
 using Unity.Networking.Transport;
-using System;
 using UnityEngine.SceneManagement;
 using System.Collections;
 
@@ -28,7 +26,7 @@ public class ServerBehaviour : MonoBehaviour , ServerSender
         m_Pipeline = m_Driver.CreatePipeline(typeof(ReliableSequencedPipelineStage));
         m_Connections = new NativeList<NetworkConnection>(8, Allocator.Persistent);
 
-        var endpoint = NetworkEndpoint.AnyIpv4.WithPort(GameManager.port);
+        var endpoint = ServerConfig.networkEndpoint;
         if (m_Driver.Bind(endpoint) != 0)
         {
             Debug.LogError("Failed to bind to port.");
@@ -138,4 +136,3 @@ public interface ServerSender
     public void EndGame();
     
 }
-#endif
