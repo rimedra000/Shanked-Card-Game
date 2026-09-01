@@ -24,7 +24,7 @@ public class MainMenu : MonoBehaviour
 
     public void SetIP(string ip)
     {
-        if(!NetworkEndpoint.TryParse(ip,ClientConfig.port,out NetworkEndpoint endpoint))
+        if(!NetworkEndpoint.TryParse(ip,ClientConfig.networkEndpoint.Port,out NetworkEndpoint endpoint))
         {
             playButton.interactable=false;
         }
@@ -44,7 +44,7 @@ public class MainMenu : MonoBehaviour
 #if SERVER
     public void Host()
     {
-        ClientConfig.networkEndpoint=NetworkEndpoint.LoopbackIpv4.WithPort(ClientConfig.port);
+        ClientConfig.networkEndpoint=NetworkEndpoint.LoopbackIpv4.WithPort(ClientConfig.networkEndpoint.Port);
         SceneManager.LoadScene(2);
     }
 #endif
