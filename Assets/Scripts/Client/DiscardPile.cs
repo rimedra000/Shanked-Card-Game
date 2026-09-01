@@ -21,9 +21,10 @@ public class DiscardPile : MonoBehaviour
 
     private void ReceiveData(object _, Data data)
     {
-        GameEvent gameEvent = data.dataHeader.gameEvent;
-        if (gameEvent!=GameEvent.ClearPile&&gameEvent!=GameEvent.RemovePlayer) return;
-        foreach (CardStruct card in data.cards.Reverse())
+        bool isClearPile=data.isGameEventData()&&data.GetGameEventData().header.gameEvent==GameEvent.ClearPile;
+        bool isRemovePlayer=data.isOtherEventData()&&data.GetOtherEventData().header.otherEvent==OtherEvent.RemovePlayer;
+        if (!(isClearPile||isRemovePlayer)) return;
+        foreach (CardStruct card in data.bytes[1..].ToCardStructArray().Reverse())
         {
             cards.Insert(0,MakeCard(card));
         }

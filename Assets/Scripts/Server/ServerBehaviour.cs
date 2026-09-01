@@ -11,7 +11,7 @@ public class ServerBehaviour : MonoBehaviour , ServerSender
     NetworkDriver m_Driver;
     NativeList<NetworkConnection> m_Connections;
     NetworkPipeline m_Pipeline;
-    ServerSimulation serverSimulation;
+    ServerSimulator serverSimulation;
 
     #if CLIENT
     private void Awake()
@@ -36,7 +36,7 @@ public class ServerBehaviour : MonoBehaviour , ServerSender
         }
         m_Driver.Listen();
 
-        serverSimulation=new(this);
+        serverSimulation=new ServerSimulation(this);
     }
 
     public void EndGame()
@@ -78,16 +78,19 @@ public class ServerBehaviour : MonoBehaviour , ServerSender
         }
         // Accept new connections.
         NetworkConnection c;
-        while ((c = m_Driver.Accept()) != default)
+        while (m_Connections.Length<8&&!serverSimulation.GameStarted() && (c = m_Driver.Accept()) != default)
         {
-            if(m_Connections.Length>=8) break;
+            // if(serverSimulation.GameStarted()) break;
+            // if(m_Connections.Length>=8) break;
+
             m_Connections.Add(c);
-            Debug.Log($"client {m_Connections.Length-1} connected (s)");
+            int id =m_Connections.Length-1;
+            Debug.Log($"client {id} connected (s)");
 
-            Data data = new Data(new DataHeader((byte)(m_Connections.Length-1),GameEvent.AddPlayer));
+            OtherEventData data = new OtherEventData(new OtherEventDataHeader((byte)id,OtherEvent.AddPlayer));
 
-            SendData(data,m_Connections.Length-1);
-            // serverSimulation.AddPlayer();
+            SendData(data,id);
+            serverSimulation.NewConnection(id);
 
             Debug.Log("Accepted a connection.");
         }
@@ -102,15 +105,15 @@ public class ServerBehaviour : MonoBehaviour , ServerSender
                 {
                     var nativebytes = new NativeArray<byte>(stream.Length,Allocator.Temp);
                     stream.ReadBytes(nativebytes);
-                    var data = new Data(nativebytes.ToArray());
+                    var data = nativebytes.ToArray();
                     nativebytes.Dispose();
-                    serverSimulation.ReceiveData(data,i);
+                    serverSimulation.ReceiveData(new Data(data),i);
                 }
                 else if (cmd == NetworkEvent.Type.Disconnect)
                 {
                     Debug.Log("Client disconnected from the server.");
-                    var data = new Data(new DataHeader((byte)i,GameEvent.RemovePlayer));
-                    serverSimulation.ReceiveData(data,i);
+                    // var data = new OtherEventData(new OtherEventDataHeader((byte)i,OtherEvent.RemovePlayer));
+                    serverSimulation.PlayerDisconnect(i);
                     m_Connections[i] = default;
                     break;
                 }
@@ -123,7 +126,7 @@ public class ServerBehaviour : MonoBehaviour , ServerSender
     {
         // Debug.Log(data);
         m_Driver.BeginSend(m_Pipeline, m_Connections[id], out var writer);
-        writer.WriteBytes(data.ToBytes());
+        writer.WriteBytes(data.bytes);
         m_Driver.EndSend(writer);
 
     }

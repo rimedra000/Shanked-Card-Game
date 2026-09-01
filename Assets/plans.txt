@@ -1,5 +1,6 @@
 voice chat 
 custom card textures
 scrollable hand
-sorted hand
-fix card offset bug
+custom sorted hand
+bug fix card offset after resolution change 
+reconnect

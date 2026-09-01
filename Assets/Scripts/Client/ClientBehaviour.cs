@@ -68,8 +68,8 @@ public class ClientBehaviour : MonoBehaviour
                 stream.ReadBytes(nativebytes);
                 var bytes = nativebytes.ToArray();
                 nativebytes.Dispose();
-                var data = new Data(bytes);
-                onDataReceived.Invoke(this,data);
+                // var data = new GameEventData(bytes);
+                onDataReceived.Invoke(this,new Data(bytes));
                 // Debug.Log(data);
                 //m_Connection.Disconnect(m_Driver);
                 //m_Connection = default;
@@ -89,7 +89,7 @@ public class ClientBehaviour : MonoBehaviour
 
     public void sendData(Data data)
     {
-        var bytes =new NativeArray<byte>(data.ToBytes(),Allocator.Temp);
+        var bytes =new NativeArray<byte>(data.bytes,Allocator.Temp);
         m_Driver.BeginSend(m_Pipeline,m_Connection, out var writer);
         writer.WriteBytes(bytes);
         m_Driver.EndSend(writer);

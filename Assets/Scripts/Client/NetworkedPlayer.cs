@@ -35,66 +35,76 @@ public class NetworkedPlayer : MonoBehaviour
 
     private void ReceiveData(object _, Data data)
     {
-        if (data.dataHeader.gameEvent==GameEvent.StartTurn)
+        if(data.isGameEventData())
         {
-            turn=data.dataHeader.player==playerID;
-            if (turn)
+            GameEventData gameEventData= data.GetGameEventData();
+            if (gameEventData.header.gameEvent==GameEvent.StartTurn)
             {
-                var c = background.color;
-                c.a=0;
-                background.color=c;
+                turn=gameEventData.header.player==playerID;
+                if (turn)
+                {
+                    var c = background.color;
+                    c.a=0;
+                    background.color=c;
+                }
+                else
+                {
+                    var c = background.color;
+                    c.a=1;
+                    background.color=c;
+                }
+                return;
             }
-            else
-            {
-                var c = background.color;
-                c.a=1;
-                background.color=c;
-            }
-            return;
-        }
 
-        if (data.dataHeader.player!=playerID) return;
-        CardStruct[] cards = data.cards;
-        switch (data.dataHeader.gameEvent)
+            if (gameEventData.header.player!=playerID) return;
+            CardStruct[] cards = gameEventData.cards;
+            switch (gameEventData.header.gameEvent)
+            {
+                case GameEvent.PlayCards:
+                    PlayCards(cards);
+                    break;
+                case GameEvent.MoveShownCard:
+                    MoveShownCard(cards);
+                    break;
+                case GameEvent.MoveHiddenCard:
+                    MoveHiddenCard(cards);
+                    break;
+                case GameEvent.SwapHand:
+                    SwapHand(cards);
+                    break;
+                case GameEvent.DrawCards:
+                    DrawCards(cards);
+                    break;
+                case GameEvent.StartTurn:
+                    break;
+                case GameEvent.DealHiddenCards:
+                    DealHiddenCards(cards);
+                    break;
+                case GameEvent.DealShownCards:
+                    DealShownCards(cards);
+                    break;
+                case GameEvent.DealHandCards:
+                    DealHandCards(cards);
+                    break;
+                case GameEvent.SwapCards:
+                    SwapCards(cards);
+                    break;
+                case GameEvent.Shanked:
+                    Shanked(cards);
+                    break;
+                case GameEvent.Ready:
+                    Ready();
+                    break;
+            }
+        }
+        else
         {
-            case GameEvent.PlayCards:
-                PlayCards(cards);
-                break;
-            case GameEvent.MoveShownCard:
-                MoveShownCard(cards);
-                break;
-            case GameEvent.MoveHiddenCard:
-                MoveHiddenCard(cards);
-                break;
-            case GameEvent.SwapHand:
-                SwapHand(cards);
-                break;
-            case GameEvent.DrawCards:
-                DrawCards(cards);
-                break;
-            case GameEvent.StartTurn:
-                break;
-            case GameEvent.DealHiddenCards:
-                DealHiddenCards(cards);
-                break;
-            case GameEvent.DealShownCards:
-                DealShownCards(cards);
-                break;
-            case GameEvent.DealHandCards:
-                DealHandCards(cards);
-                break;
-            case GameEvent.SwapCards:
-                SwapCards(cards);
-                break;
-            case GameEvent.Shanked:
-                Shanked(cards);
-                break;
-            case GameEvent.RemovePlayer:
+            OtherEventData otherEventData= data.GetOtherEventData();
+            OtherEventDataHeader otherEventDataHeader = otherEventData.header;
+            if(otherEventDataHeader.otherEvent==OtherEvent.RemovePlayer&&otherEventDataHeader.miscData==playerID)
+            {
                 RemovePlayer();
-                break;
-            case GameEvent.Ready:
-                Ready();
-                break;
+            }
         }
     }
 

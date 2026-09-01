@@ -19,7 +19,9 @@ public class DrawPile : MonoBehaviour
 
     private void ReceiveData(object sender, Data data)
     {
-        GameEvent gameEvent = data.dataHeader.gameEvent;
+        if(!data.isGameEventData())return;
+        GameEventData gameEventData=data.GetGameEventData();
+        GameEvent gameEvent = gameEventData.header.gameEvent;
         if (gameEvent != GameEvent.DrawCards &&
             gameEvent != GameEvent.DealHandCards &&
             gameEvent != GameEvent.DealHiddenCards &&
@@ -28,7 +30,7 @@ public class DrawPile : MonoBehaviour
             return;
         }
 
-        cardsRemaining -= data.cards.Length;
+        cardsRemaining -= gameEventData.cards.Length;
         for (int i = transform.childCount-1; i >= cardsRemaining; i--)
         {
             Destroy(transform.GetChild(i).gameObject);

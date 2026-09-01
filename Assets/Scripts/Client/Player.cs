@@ -44,77 +44,84 @@ public class Player : MonoBehaviour
     {
         if (playerID==-1)
         {
-            Init(data);       
+            Init(data);
             return;
         }
 
-        if (data.dataHeader.gameEvent==GameEvent.StartTurn)
+        if (data.isGameEventData())
         {
-
-            if (turn&&data.dataHeader.player!=playerID)
-            {
-                turn=false;    //turn end
-                EndTurn();
-            }
-       
+            GameEventData gameEventData=data.GetGameEventData();
             
-            if(data.dataHeader.player!=playerID)
+            if (gameEventData.header.gameEvent==GameEvent.StartTurn)
             {
-                //others turns
+
+                if (turn&&gameEventData.header.player!=playerID)
+                {
+                    turn=false;    //turn end
+                    EndTurn();
+                }
+        
+                
+                // if(gameEventData.header.player!=playerID)
+                // {
+                //     //others turns
+                // }
+
+
+                if(isSetup)
+                {
+                    SetupEnd();
+                }
             }
 
-
-            if(isSetup)
+            if (gameEventData.header.player!=playerID) return;
+            CardStruct[] cards = gameEventData.cards;
+            switch (gameEventData.header.gameEvent)
             {
-                SetupEnd();
-                // return;
+                case GameEvent.PlayCards:
+                    PlayCards(cards);
+                    break;
+                case GameEvent.MoveShownCard:
+                    MoveShownCard(cards);
+                    break;
+                case GameEvent.MoveHiddenCard:
+                    MoveHiddenCard(cards);
+                    break;
+                case GameEvent.SwapHand:
+                    SwapHand(cards);
+                    break;
+                case GameEvent.DrawCards:
+                    DrawCards(cards);
+                    break;
+                case GameEvent.StartTurn:
+                    StartTurn();
+                    break;
+                case GameEvent.DealHiddenCards:
+                    DealHiddenCards(cards);
+                    break;
+                case GameEvent.DealShownCards:
+                    DealShownCards(cards);
+                    break;
+                case GameEvent.DealHandCards:
+                    DealHandCards(cards);
+                    break;
+                case GameEvent.SwapCards:
+                    SwapCards(cards);
+                    break;
+                case GameEvent.Shanked:
+                    Shanked(cards);
+                    break;
             }
-
-
-
         }
-
-        if (data.dataHeader.player!=playerID) return;
-        CardStruct[] cards = data.cards;
-        switch (data.dataHeader.gameEvent)
+        else
         {
-            case GameEvent.PlayCards:
-                PlayCards(cards);
-                break;
-            case GameEvent.MoveShownCard:
-                MoveShownCard(cards);
-                break;
-            case GameEvent.MoveHiddenCard:
-                MoveHiddenCard(cards);
-                break;
-            case GameEvent.SwapHand:
-                SwapHand(cards);
-                break;
-            case GameEvent.DrawCards:
-                DrawCards(cards);
-                break;
-            case GameEvent.StartTurn:
-                StartTurn();
-                break;
-            case GameEvent.DealHiddenCards:
-                DealHiddenCards(cards);
-                break;
-            case GameEvent.DealShownCards:
-                DealShownCards(cards);
-                break;
-            case GameEvent.DealHandCards:
-                DealHandCards(cards);
-                break;
-            case GameEvent.SwapCards:
-                SwapCards(cards);
-                break;
-            case GameEvent.Shanked:
-                Shanked(cards);
-                break;
-            case GameEvent.RemovePlayer:
-                RemovePlayer(cards);
-                break;
+            OtherEventData otherEventData = data.GetOtherEventData();
+            OtherEventDataHeader otherEventDataHeader = otherEventData.header;
+            if(otherEventDataHeader.otherEvent==OtherEvent.RemovePlayer&&playerID==otherEventDataHeader.miscData)
+                RemovePlayer();
+                
         }
+        
     }
 
     private void SetupEnd()
@@ -127,7 +134,7 @@ public class Player : MonoBehaviour
         DeSelectAll();
     }
 
-    private void RemovePlayer(CardStruct[] cards)
+    private void RemovePlayer()
     {
         for (int i = handCards.Count - 1; i >= 0; i--)
         {
@@ -153,23 +160,11 @@ public class Player : MonoBehaviour
     private void Init(Data data)
     {
         // Debug.Log(e.dataHeader.player);
-        playerID=data.dataHeader.player;
+        playerID=data.GetOtherEventData().header.miscData;
         readyButton.interactable=true;
         
-        byte[] name = System.Text.Encoding.UTF8.GetBytes(GameManager.username);
-        byte[] connectionId= new byte[8];
-        if (GameManager.connectionID==0)
-        {
-            new System.Random().NextBytes(connectionId);
-            GameManager.connectionID = BitConverter.ToInt64(connectionId);    
-        }
-        else
-        {
-            connectionId=BitConverter.GetBytes(GameManager.connectionID);
-        }
-        
-        byte[] outdata = connectionId.Concat(name).ToArray();
-        SendData(new Data(new DataHeader((byte)playerID,GameEvent.AddPlayer),outdata));
+        byte[] name = System.Text.Encoding.UTF8.GetBytes(GameManager.username);   
+        SendData(new OtherEventData(new OtherEventDataHeader((byte)playerID,OtherEvent.AddPlayer),name));
     }
 
     private void StartTurn()
@@ -497,30 +492,30 @@ public class Player : MonoBehaviour
                 handCard= selectedCards[0];
             }
             CardStruct[] cards = {shownCard.cardStruct,handCard.cardStruct};
-            Data data = new Data(new DataHeader((byte)playerID,GameEvent.SwapCards),cards);
+            GameEventData data = new GameEventData(new GameEventDataHeader((byte)playerID,GameEvent.SwapCards),cards);
             SendData(data);
         }
         else
         {
             if (isShanked)
             {
-                Data data = new Data(new DataHeader((byte)playerID,GameEvent.Shanked),Array.Empty<CardStruct>());
+                GameEventData data = new GameEventData(new GameEventDataHeader((byte)playerID,GameEvent.Shanked),Array.Empty<CardStruct>());
                 SendData(data);
             }
             else if(handCards.Count>0)
             {
                 CardStruct[] cards = selectedCards.Select(c=> c.cardStruct).ToArray();
-                Data data = new Data(new DataHeader((byte)playerID,GameEvent.PlayCards),cards);
+                GameEventData data = new GameEventData(new GameEventDataHeader((byte)playerID,GameEvent.PlayCards),cards);
                 SendData(data);
             }
             else if(shownCards.Count>0)
             {   
-                Data data = new Data(new DataHeader((byte)playerID,GameEvent.MoveShownCard),new []{selectedCards[0].cardStruct});
+                GameEventData data = new GameEventData(new GameEventDataHeader((byte)playerID,GameEvent.MoveShownCard),new []{selectedCards[0].cardStruct});
                 SendData(data);
             }
             else if(hiddenCards.Count>0)
             {
-                Data data = new Data(new DataHeader((byte)playerID,GameEvent.MoveHiddenCard),new []{selectedCards[0].cardStruct});
+                GameEventData data = new GameEventData(new GameEventDataHeader((byte)playerID,GameEvent.MoveHiddenCard),new []{selectedCards[0].cardStruct});
                 SendData(data);
             }
         }
@@ -543,14 +538,18 @@ public class Player : MonoBehaviour
             SetCardsInteract(handCards,true);
         }
 
-        Data data = new Data(new DataHeader((byte)playerID,GameEvent.Ready),Array.Empty<CardStruct>());
+        GameEventData data = new GameEventData(new GameEventDataHeader((byte)playerID,GameEvent.Ready),Array.Empty<CardStruct>());
         SendData(data);
         
 
         
     }
 
-    private void SendData(Data data)
+    private void SendData(GameEventData data)
+    {
+        clientBehaviour.sendData(data);
+    }
+    private void SendData(OtherEventData data)
     {
         clientBehaviour.sendData(data);
     }

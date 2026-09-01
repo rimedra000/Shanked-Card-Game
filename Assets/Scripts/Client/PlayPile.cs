@@ -30,20 +30,22 @@ public class PlayPile : MonoBehaviour
         
     }
 
-    private void ReceiveData(object sender, Data e)
+    private void ReceiveData(object _, Data data)
     {
-        switch (e.dataHeader.gameEvent)
+        if (!data.isGameEventData()) return;
+        GameEventData gameEventData=data.GetGameEventData();
+        switch (gameEventData.header.gameEvent)
         {
             case GameEvent.PlayCards:
                 // cards = e.cards.Concat(cards).ToList();
-                foreach (CardStruct card in e.cards.Reverse())
+                foreach (CardStruct card in gameEventData.cards.Reverse())
                 {
                     cards.Insert(0,MakeCard(card));
                 }
                 break;
             case GameEvent.ClearPile:
                 // cards = cards.Except(e.cards).ToList(); 
-                foreach (CardStruct card in e.cards)
+                foreach (CardStruct card in gameEventData.cards)
                 {
                     CardObject cardObject = cards.Find(c=>c.cardStruct==card);
                     cards.Remove(cardObject);
@@ -56,7 +58,6 @@ public class PlayPile : MonoBehaviour
                     Destroy(card.gameObject);
                 }
                 cards.Clear();
-
                 break;
             default:
                 return;
