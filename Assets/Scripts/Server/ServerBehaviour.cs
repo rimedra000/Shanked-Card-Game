@@ -70,13 +70,14 @@ public class ServerBehaviour : MonoBehaviour , ServerSender
         {
             if (!m_Connections[i].IsCreated)
             {
-                m_Connections.RemoveAtSwapBack(i);
+                m_Connections.RemoveAtSwapBack(i);//TODO: fix possible desync
                 i--;
             }
         }
         // Accept new connections.
         NetworkConnection c;
-        while (m_Connections.Length<8&&!serverSimulation.GameStarted() && (c = m_Driver.Accept()) != default)
+        bool gameNotStarted = !serverSimulation.GameStarted();
+        while (m_Connections.Length<8&&gameNotStarted && (c = m_Driver.Accept()) != default)
         {
             // if(serverSimulation.GameStarted()) break;
             // if(m_Connections.Length>=8) break;
@@ -85,7 +86,7 @@ public class ServerBehaviour : MonoBehaviour , ServerSender
             int id =m_Connections.Length-1;
             Debug.Log($"client {id} connected (s)");
 
-            OtherEventData data = new OtherEventData(new OtherEventDataHeader((byte)id,OtherEvent.AddPlayer));
+            OtherEventData data = new OtherEventData((byte)id,OtherEvent.AddPlayer);
 
             SendData(data,id);
             serverSimulation.NewConnection(id);

@@ -33,7 +33,7 @@ public class PlayPile : MonoBehaviour
     {
         if (!data.isGameEventData()) return;
         GameEventData gameEventData=data.GetGameEventData();
-        switch (gameEventData.header.gameEvent)
+        switch (gameEventData.gameEvent)
         {
             case GameEvent.PlayCards:
                 // cards = e.cards.Concat(cards).ToList();

@@ -14,15 +14,15 @@ public class PlayerCreator : MonoBehaviour
     {
         if(!data.isOtherEventData()) return;
         OtherEventData otherEventData=data.GetOtherEventData();
-        if(a==-1){a=otherEventData.header.miscData;return;}
-        if(a==otherEventData.header.miscData){return;}
-        if (otherEventData.header.otherEvent!=OtherEvent.AddPlayer)
+        if(a==-1){a=otherEventData.miscData;return;}
+        if(a==otherEventData.miscData){return;}
+        if (otherEventData.otherEvent!=OtherEvent.AddPlayer)
         {
             return;
         }
 
         NetworkedPlayer networkedPlayer = Instantiate(NetworkedPlayerPrefab, transform).GetComponent<NetworkedPlayer>();
-        networkedPlayer.playerID=otherEventData.header.miscData;
+        networkedPlayer.playerID=otherEventData.miscData;
         networkedPlayer.SetName(System.Text.Encoding.UTF8.GetString(otherEventData.miscBytes));
     }
 

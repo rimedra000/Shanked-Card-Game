@@ -37,9 +37,9 @@ public class NetworkedPlayer : MonoBehaviour
         if(data.isGameEventData())
         {
             GameEventData gameEventData= data.GetGameEventData();
-            if (gameEventData.header.gameEvent==GameEvent.StartTurn)
+            if (gameEventData.gameEvent==GameEvent.StartTurn)
             {
-                turn=gameEventData.header.player==playerID;
+                turn=gameEventData.player==playerID;
                 if (turn)
                 {
                     var c = background.color;
@@ -55,9 +55,9 @@ public class NetworkedPlayer : MonoBehaviour
                 return;
             }
 
-            if (gameEventData.header.player!=playerID) return;
+            if (gameEventData.player!=playerID) return;
             CardStruct[] cards = gameEventData.cards;
-            switch (gameEventData.header.gameEvent)
+            switch (gameEventData.gameEvent)
             {
                 case GameEvent.PlayCards:
                     PlayCards(cards);
@@ -99,8 +99,7 @@ public class NetworkedPlayer : MonoBehaviour
         else
         {
             OtherEventData otherEventData= data.GetOtherEventData();
-            OtherEventDataHeader otherEventDataHeader = otherEventData.header;
-            if(otherEventDataHeader.otherEvent==OtherEvent.RemovePlayer&&otherEventDataHeader.miscData==playerID)
+            if(otherEventData.otherEvent==OtherEvent.RemovePlayer&&otherEventData.miscData==playerID)
             {
                 RemovePlayer();
             }

@@ -20,7 +20,7 @@ public class DrawPile : MonoBehaviour
     {
         if(!data.isGameEventData())return;
         GameEventData gameEventData=data.GetGameEventData();
-        GameEvent gameEvent = gameEventData.header.gameEvent;
+        GameEvent gameEvent = gameEventData.gameEvent;
         if (gameEvent != GameEvent.DrawCards &&
             gameEvent != GameEvent.DealHandCards &&
             gameEvent != GameEvent.DealHiddenCards &&

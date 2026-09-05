@@ -36,10 +36,10 @@ public class ClientSimulation : MonoBehaviour
         {
             GameEventData gameEventData = data.GetGameEventData();
             
-            byte id = gameEventData.header.player;
+            byte id = gameEventData.player;
             Player player = players[id];
             CardStruct[] cards = gameEventData.cards;
-            switch (gameEventData.header.gameEvent)
+            switch (gameEventData.gameEvent)
             {
                 case GameEvent.PlayCards:
                     player.mainHand = player.mainHand.Except(cards).ToList();

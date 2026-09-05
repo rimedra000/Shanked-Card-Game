@@ -104,6 +104,7 @@ public static class CardExtensions
 
 public enum CardValue : byte
 {
+    //0 reserved
     Ace=1,
     Two=2,
     Three=3,
@@ -118,6 +119,7 @@ public enum CardValue : byte
     Queen=12,//c
     King=13,//d
     Joker=14,//e
+    //f
     Blank=0x80
 
 }

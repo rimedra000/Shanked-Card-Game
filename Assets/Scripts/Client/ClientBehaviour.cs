@@ -35,8 +35,6 @@ public class ClientBehaviour : MonoBehaviour
 
     void Update()
     {
-        
-        
         m_Driver.ScheduleUpdate().Complete();
 
         if (!m_Connection.IsCreated)
@@ -51,39 +49,22 @@ public class ClientBehaviour : MonoBehaviour
             if (cmd == NetworkEvent.Type.Connect)
             {
                 Debug.Log("We are now connected to the server.");
-                // CardValue[] cards = {CardValue.Ace,CardValue.Two,CardValue.Three,CardValue.Four,CardValue.Five,CardValue.Six,CardValue.Seven,CardValue.Eight,CardValue.Nine,CardValue.Ten,CardValue.Jack,CardValue.Queen,CardValue.King,CardValue.Joker};
-                // var bytes =new NativeArray<byte>(cards.Select(c=>(byte)c).ToArray(),Allocator.Temp);
-                // m_Driver.BeginSend(m_Pipeline,m_Connection, out var writer);
-                // writer.WriteBytes(bytes);
-                // m_Driver.EndSend(writer);
-                // bytes.Dispose();
             }
             else if (cmd == NetworkEvent.Type.Data)
             {
-                // while (stream.Length>stream.GetBytesRead())
-                // {
-                //     Debug.Log($"Got the value {(CardStruct)stream.ReadByte()} back from the server.");    
-                // }
-
                 var nativebytes = new NativeArray<byte>(stream.Length,Allocator.Temp);
                 stream.ReadBytes(nativebytes);
                 var bytes = nativebytes.ToArray();
                 nativebytes.Dispose();
-                // var data = new GameEventData(bytes);
                 onDataReceived.Invoke(this,new Data(bytes));
-                // Debug.Log(data);
-                //m_Connection.Disconnect(m_Driver);
-                //m_Connection = default;
             }
             else if (cmd == NetworkEvent.Type.Disconnect)
             {
                 Debug.Log("Client got disconnected from server.");
                 m_Connection = default;
+                m_Driver.Dispose();
                 UnityEngine.SceneManagement.SceneManager.LoadScene(0);
             }
-
-
-
         }
     }
 
