@@ -77,7 +77,7 @@ public class ServerBehaviour : MonoBehaviour , ServerSender
         // Accept new connections.
         NetworkConnection c;
         bool gameNotStarted = !serverSimulation.GameStarted();
-        while (m_Connections.Length<8&&gameNotStarted && (c = m_Driver.Accept()) != default)
+        while (m_Connections.Length<8 && (c = m_Driver.Accept(out NativeArray<byte> nativebytes)) != default)
         {
             // if(serverSimulation.GameStarted()) break;
             // if(m_Connections.Length>=8) break;
@@ -86,10 +86,13 @@ public class ServerBehaviour : MonoBehaviour , ServerSender
             int id =m_Connections.Length-1;
             Debug.Log($"client {id} connected (s)");
 
-            OtherEventData data = new OtherEventData((byte)id,OtherEvent.AddPlayer);
+            byte[] bytes = nativebytes.ToArray();
+            nativebytes.Dispose();
 
+            // OtherEventData data = new OtherEventData((byte)id,OtherEvent.AddPlayer);
+            Data data = serverSimulation.NewConnection(id,bytes);
             SendData(data,id);
-            serverSimulation.NewConnection(id);
+            
 
             Debug.Log("Accepted a connection.");
         }

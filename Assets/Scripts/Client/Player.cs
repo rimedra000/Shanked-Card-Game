@@ -543,11 +543,7 @@ public class Player : MonoBehaviour
         
     }
 
-    private void SendData(GameEventData data)
-    {
-        clientBehaviour.sendData(data);
-    }
-    private void SendData(OtherEventData data)
+    private void SendData(Data data)
     {
         clientBehaviour.sendData(data);
     }

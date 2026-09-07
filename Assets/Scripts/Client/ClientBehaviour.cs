@@ -25,7 +25,10 @@ public class ClientBehaviour : MonoBehaviour
         m_Driver = NetworkDriver.Create(new WebSocketNetworkInterface());
         m_Pipeline = m_Driver.CreatePipeline(typeof(ReliableSequencedPipelineStage));
         var endpoint = ClientConfig.networkEndpoint;
-        m_Connection = m_Driver.Connect(endpoint);
+        byte[] name = System.Text.Encoding.UTF8.GetBytes(ClientConfig.username);
+        var bytes= new NativeArray<byte>(name,Allocator.Temp);
+        m_Connection = m_Driver.Connect(endpoint,bytes);
+        bytes.Dispose();
     }
 
     void OnDestroy()

@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 public class ServerSimulation : ServerSimulator
 {
     private ServerSender serverSender;
@@ -14,6 +15,19 @@ public class ServerSimulation : ServerSimulator
     private byte turnOffset=0;
     private bool isSetupTime=true;
     private Player[] players =new Player[8];
+    private class Player
+    {
+        public List<CardStruct> mainHand=new();
+        public List<CardStruct> shownCards=new();
+        public List<CardStruct> hiddenCards=new();
+        public bool ready=false;
+        public bool connected=false;
+        public byte connectionIndex =0x00;
+        public string username="";
+        // public int realId=-1;
+
+    }
+
     private List<Data> pastData =new();
 
     public ServerSimulation(ServerSender serverSender)
@@ -55,35 +69,50 @@ public class ServerSimulation : ServerSimulator
         drawPile= new(tempCards);
     }
 
-    private class Player
-    {
-        public List<CardStruct> mainHand=new();
-        public List<CardStruct> shownCards=new();
-        public List<CardStruct> hiddenCards=new();
-        public bool ready=false;
-        public bool connected=true;
-        public long connectionID =0;
-        public int realId=-1;
+    
 
-    }
-
-    private bool AddPlayer(OtherEventData data)
+    private bool AddPlayer(OtherEventData data,int connectionId)
     {
-        if(!isSetupTime) return false;
-        
         byte id = data.miscData;
-
-        if (players[id]!=null) return false;
-
-        //TODO: check if valid utf-8
-
-        Player player = new Player();
+        foreach (Player p in players)if(p!=null&&p.connected&&p.connectionIndex==connectionId)return false;
+        if (players[id] != null)
+        {
+            if (players[id].connected == true) return false;
+            else
+            {
+                foreach (Data oldData in pastData)
+                {
+                    serverSender.SendData(isPrivateData(oldData,id)?CensorData(oldData):oldData,connectionId);
+                }
+                players[id].connectionIndex= (byte)connectionId;
+                players[id].connected=true;
+                return true;
+            }
+        }
+        if(!isSetupTime) return false;
+        var encoding =new UTF8Encoding(false,true);
+        string username;
+        try
+        {
+            username = encoding.GetString(data.miscBytes);
+        }
+        catch (ArgumentException)
+        {
+            return false;
+        }
+        Player player = new Player
+        {
+            username=username,
+            connectionIndex = (byte)connectionId,
+            connected=true
+            
+        };
 
         players[id] = player;
 
         foreach (Data oldData in pastData)
         {
-            serverSender.SendData(isPrivateData(oldData)?CensorData(oldData):oldData,id);
+            serverSender.SendData(isPrivateData(oldData,id)?CensorData(oldData):oldData,connectionId);
         }
         
         SendToAll(data);
@@ -94,12 +123,13 @@ public class ServerSimulation : ServerSimulator
         return true;
     }
 
-    private bool isPrivateData(Data data)
+    private bool isPrivateData(Data data,byte player)
     {
         if (data.isGameEventData())
         {
-            GameEvent gameEvent= data.GetGameEventData().gameEvent;
-            return isPrivateData(gameEvent);
+            GameEventData gameEventData = data.GetGameEventData();
+            if(gameEventData.player==player)return false;
+            return isPrivateData(gameEventData.gameEvent);
         }
         else if(data.isOtherEventData())
         {
@@ -160,14 +190,16 @@ public class ServerSimulation : ServerSimulator
     private void SendToAll(GameEventData data)
     {
         int id = data.player;
-        if(players[id]!=null)serverSender.SendData(data,id);
+        if(players[id]!=null)serverSender.SendData(data,players[id].connectionIndex);
 
         GameEventData CensoredData = isPrivateData(data.gameEvent) ?CensorData(data):data;
         for (int i = 0; i < players.Length; i++)
         {
             if(i==id) continue;
-            if(players[i]==null) continue;
-            serverSender.SendData(CensoredData,i);
+            Player player = players[i];
+            if (player==null) continue;
+            if(player.connected==false)continue;
+            serverSender.SendData(CensoredData,players[i].connectionIndex);
         }
         pastData.Add(data);
     }
@@ -181,8 +213,10 @@ public class ServerSimulation : ServerSimulator
         for (int i = 0; i < players.Length; i++)
         {
             // if(i==id) continue;
-            if(players[i]==null) continue;
-            serverSender.SendData(data,i);
+            Player player = players[i];
+            if (player==null) continue;
+            if(player.connected==false)continue;
+            serverSender.SendData(data,players[i].connectionIndex);
         }
         pastData.Add(data);
     }
@@ -203,12 +237,13 @@ public class ServerSimulation : ServerSimulator
         return new GameEventData(data.player,data.gameEvent,data.cards.Select(c=>c.Censored()).ToArray());
     }
 
-    public bool ReceiveData(Data data,int trueId)
+    public bool ReceiveData(Data data,int connectionId)
     {
         if (data.isGameEventData())
         {
             GameEventData gameEventData=data.GetGameEventData();
             byte id = gameEventData.player;
+            if(players[id].connectionIndex!=connectionId) return false;
             GameEvent gameEvent = gameEventData.gameEvent;
             
             if (isSetupTime)
@@ -248,8 +283,8 @@ public class ServerSimulation : ServerSimulator
         {
             OtherEventData otherEventData= data.GetOtherEventData();
             OtherEvent otherEvent = otherEventData.otherEvent;
-            if(isSetupTime&&otherEvent==OtherEvent.AddPlayer)
-                return AddPlayer(otherEventData);
+            if(otherEvent==OtherEvent.AddPlayer)
+                return AddPlayer(otherEventData,connectionId);
             return false;
         }
         return false;
@@ -260,11 +295,24 @@ public class ServerSimulation : ServerSimulator
         if (players[id]==null) return false;
 
         Player player = players[id];
-        players[id]=null;
-        CardStruct[] playerCards = player.mainHand.Concat(player.shownCards).Concat(player.hiddenCards).ToArray();
-        OtherEventData data = new OtherEventData(id,OtherEvent.RemovePlayer,playerCards.ToByteArray());
-        SendToAll(data);
-
+        
+        Player maxConnectionPlayer=null;
+        foreach (Player p in players)
+        {
+            if(p==null||!p.connected) continue;
+            if(p.connectionIndex>=(maxConnectionPlayer?.connectionIndex??0x00))maxConnectionPlayer=p;
+        }
+        if(maxConnectionPlayer==null)
+        {
+            serverSender.EndGame();
+            return true;
+        }
+        maxConnectionPlayer.connectionIndex=player.connectionIndex;
+        // players[id]=null;
+        // CardStruct[] playerCards = player.mainHand.Concat(player.shownCards).Concat(player.hiddenCards).ToArray();
+        // OtherEventData data = new OtherEventData(id,OtherEvent.RemovePlayer,playerCards.ToByteArray());
+        // SendToAll(data);
+        players[id].connected=false;
         if(turn==id&&!isSetupTime) StartTurn();
         return true;
     }
@@ -313,12 +361,7 @@ public class ServerSimulation : ServerSimulator
         Player player = players[turn];
         if(cards.Length==0)return false;
         CardValue cardValue = cards[0].value;
-        foreach (CardStruct card in cards)
-        {
-            if(card.value!=cardValue) return false;
-            if(!player.mainHand.Contains(card)) return false;
-        }
-
+        if(cards.Any(card=> card.value!=cardValue||!player.mainHand.Contains(card)))return false;
         if(!ValidCard(cardValue))return false;
 
         playPile.InsertRange(0,cards);
@@ -446,7 +489,6 @@ public class ServerSimulation : ServerSimulator
         int cardsNeeded = Math.Min(3-player.mainHand.Count,drawPile.Count);
         if (cardsNeeded<=0) return;
 
-        //TODO: send data
         CardStruct[] cards = drawPile.PopMany(cardsNeeded);
         GameEventData data = new GameEventData(turn,GameEvent.DrawCards,cards);
         SendToAll(data);
@@ -455,7 +497,7 @@ public class ServerSimulation : ServerSimulator
 
     private void StartTurn()
     {
-        if(!players.Any(player => (player?.connected??false)&&HasCards(player)))
+        if(!players.Any(player => HasCards(player)))
         {
             serverSender.EndGame();
             return;        
@@ -486,6 +528,7 @@ public class ServerSimulation : ServerSimulator
     private static bool HasCards(Player player)
     {
         if(player==null) return false;
+        if(!player.connected) return false; 
         bool emptyMainHand = player.mainHand.Count <= 0;
         bool emptyShownCards = player.shownCards.Count <= 0;
         bool emptyHiddenCards = player.hiddenCards.Count <= 0;
@@ -570,6 +613,7 @@ public class ServerSimulation : ServerSimulator
         foreach (Player p in players)
         {
             if(p==null) continue;
+            if(!p.connected)continue;
             if(!p.ready) return true;
         }
         isSetupTime=false;
@@ -577,9 +621,27 @@ public class ServerSimulation : ServerSimulator
         return true;
     }
 
-    public Data NewConnection(int id)
+    public Data NewConnection(int connectionId,byte[] bytes)
     {
-        return new OtherEventData((byte)id,OtherEvent.AddPlayer);
+        for (int i = 0; i < players.Length; i++)
+        {
+            if (players[i]!=null&&!players[i].connected)
+            {
+                if (players[i].username == System.Text.Encoding.UTF8.GetString(bytes))
+                    return new OtherEventData((byte)i, OtherEvent.AddPlayer);
+            }
+        }
+        
+        for (int i = 0; i < players.Length; i++)
+        {
+            if (players[i]==null)return new OtherEventData((byte)i,OtherEvent.AddPlayer);
+        }
+        for (int i = 0; i < players.Length; i++)
+        {
+            if (players[i]==null&&!players[i].connected)return new OtherEventData((byte)i,OtherEvent.AddPlayer);
+        }
+
+        return new OtherEventData((byte)connectionId,OtherEvent.AddPlayer);
     }
 
     public void PlayerDisconnect(int id)
@@ -596,7 +658,7 @@ public class ServerSimulation : ServerSimulator
 public interface ServerSimulator
 {
     public bool ReceiveData(Data data,int id);
-    public Data NewConnection(int id);
+    public Data NewConnection(int id,byte[] bytes);
     public void PlayerDisconnect(int id);
     public bool GameStarted();
 }
