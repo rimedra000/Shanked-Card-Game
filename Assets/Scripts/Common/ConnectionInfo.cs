@@ -1,12 +1,12 @@
 #region GameEvent
-public struct GameEventData
+public readonly struct GameEventData
 {
     private readonly byte header;
     public readonly GameEvent gameEvent => (GameEvent)(header & 0x0F);
     public readonly byte player => (byte)((header & 0b_0111_0000) >> 4);
     public readonly CardStruct[] cards;
 
-    public byte[] ToBytes()
+    public readonly byte[] ToBytes()
     {
         var result = new byte[cards.Length+1];
         result[0]=header;
@@ -61,14 +61,14 @@ public enum GameEvent : byte
 #endregion
 #region OtherEvent
 
-public struct OtherEventData
+public readonly struct OtherEventData
 {
     private readonly byte header;
     public readonly OtherEvent otherEvent => (OtherEvent)(header & 0b_0000_1111);
     public readonly byte miscData => (byte)((header & 0b_0111_0000) >> 4);
     public readonly byte[] miscBytes;
 
-    public byte[] ToBytes()
+    public readonly byte[] ToBytes()
     {
         var result = new byte[miscBytes.Length+1];
         result[0]=header;
@@ -95,7 +95,7 @@ public struct OtherEventData
     }
     public override readonly string ToString()
     {
-        return $"miscData:{miscData} Other Event:{otherEvent} cards:[{{{string.Join("} , {", miscBytes)}}}]";        
+        return $"miscData:{miscData} Other Event:{otherEvent} miscBytes:[{{{string.Join("} , {", miscBytes)}}}]";        
     }
 }
 
@@ -119,18 +119,30 @@ public enum OtherEvent : byte
     //0xf misc
 }
 #endregion
-public struct Data
+public readonly struct Data
 {
     public readonly byte[] bytes;
-    public GameEventData GetGameEventData() => new(bytes);
-    public bool isGameEventData()=>(bytes[0]&0x80)==0x00;
-    public OtherEventData GetOtherEventData() => new(bytes);
-    public bool isOtherEventData()=> (bytes[0]&0x80)==0x80;
+    public readonly GameEventData GetGameEventData() => new(bytes);
+    public readonly bool isGameEventData()=>(bytes[0]&0x80)==0x00;
+    public readonly OtherEventData GetOtherEventData() => new(bytes);
+    public readonly bool isOtherEventData()=> (bytes[0]&0x80)==0x80;
     
     public static implicit operator Data(GameEventData gameEventData)=> new (gameEventData.ToBytes());
     public static implicit operator Data(OtherEventData otherEventData)=> new (otherEventData.ToBytes());
     public Data(byte[] bytes)
     {
         this.bytes=bytes;
+    }
+    public override readonly string ToString()
+    {
+        if(isGameEventData())
+        {
+            return GetGameEventData().ToString();
+        }
+        else if (isOtherEventData())
+        {
+            return GetOtherEventData().ToString();
+        }
+        return base.ToString();
     }
 }

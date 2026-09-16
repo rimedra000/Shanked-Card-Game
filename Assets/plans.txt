@@ -1,6 +1,6 @@
 voice chat 
+WSS support
 custom card textures
 scrollable hand
 custom sorted hand
 bug fix card offset after resolution change 
-reconnect

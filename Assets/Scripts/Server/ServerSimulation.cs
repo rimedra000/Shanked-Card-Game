@@ -30,7 +30,7 @@ public class ServerSimulation : ServerSimulator
 
     private List<Data> pastData =new();
 
-    public ServerSimulation(ServerSender serverSender)
+    public ServerSimulation(ServerSender serverSender,Random random=null)
     {
         this.serverSender=serverSender;
 #if !SHORT_CARDS
@@ -57,7 +57,7 @@ public class ServerSimulation : ServerSimulator
         CardStruct[] tempCards=new byte[]{1,2,3,4,5,6,7,8,9,10,11,12,13,14}.ToCardStructArray();
 #endif
         //shuffle all cards
-        Random r = new Random();
+        Random r = random??new Random();
         for(int i=tempCards.Length - 1; i > 1; i--)
         {
             int randomIndex=r.Next(0,i);
