@@ -223,6 +223,7 @@ public class NetworkedPlayer : MonoBehaviour
     public void SetName(string name)
     {
         usernameText.text=name;
+        gameObject.name=name;
     }
 
     

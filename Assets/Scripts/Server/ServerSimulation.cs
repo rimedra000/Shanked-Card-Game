@@ -72,7 +72,7 @@ public class ServerSimulation : ServerSimulator
     
 
     private bool AddPlayer(OtherEventData data,int connectionId)
-    {
+        {
         byte id = data.miscData;
         foreach (Player p in players)if(p!=null&&p.connected&&p.connectionIndex==connectionId)return false;
         if (players[id] != null)
@@ -290,31 +290,14 @@ public class ServerSimulation : ServerSimulator
         return false;
     }
 
-    private bool RemovePlayer(byte id)
+    private void RemovePlayer(byte id)
     {
-        if (players[id]==null) return false;
-
         Player player = players[id];
-        
-        Player maxConnectionPlayer=null;
-        foreach (Player p in players)
-        {
-            if(p==null||!p.connected) continue;
-            if(p.connectionIndex>=(maxConnectionPlayer?.connectionIndex??0x00))maxConnectionPlayer=p;
-        }
-        if(maxConnectionPlayer==null)
-        {
-            serverSender.EndGame();
-            return true;
-        }
-        maxConnectionPlayer.connectionIndex=player.connectionIndex;
-        // players[id]=null;
-        // CardStruct[] playerCards = player.mainHand.Concat(player.shownCards).Concat(player.hiddenCards).ToArray();
-        // OtherEventData data = new OtherEventData(id,OtherEvent.RemovePlayer,playerCards.ToByteArray());
-        // SendToAll(data);
-        players[id].connected=false;
-        if(turn==id&&!isSetupTime) StartTurn();
-        return true;
+        players[id]=null;
+        CardStruct[] playerCards = player.mainHand.Concat(player.shownCards).Concat(player.hiddenCards).ToArray();
+        OtherEventData data = new OtherEventData(id,OtherEvent.RemovePlayer,playerCards.ToByteArray());
+        SendToAll(data);
+        return;
     }
 
     private bool ValidCard(CardValue card)
@@ -638,7 +621,11 @@ public class ServerSimulation : ServerSimulator
         }
         for (int i = 0; i < players.Length; i++)
         {
-            if (players[i]==null&&!players[i].connected)return new OtherEventData((byte)i,OtherEvent.AddPlayer);
+            if (players[i]!=null&&!players[i].connected)
+            {
+                RemovePlayer((byte)i);
+                return new OtherEventData((byte)i,OtherEvent.AddPlayer);
+            }
         }
 
         return new OtherEventData((byte)connectionId,OtherEvent.AddPlayer);
@@ -646,7 +633,33 @@ public class ServerSimulation : ServerSimulator
 
     public void PlayerDisconnect(int id)
     {
-        RemovePlayer((byte)id);
+        
+        // if (players[id]==null) return;
+        int playerIndex=-1;
+        for (int i = 0; i < players.Length; i++)
+        {
+            Player p = players[i];
+            if(p==null||!p.connected) continue;
+            if (p.connectionIndex==id){playerIndex=i;break;}
+        }
+        if(playerIndex<0)return;
+        Player player = players[playerIndex];
+        
+        Player maxConnectionPlayer=null;
+        foreach (Player p in players)
+        {
+            if(p==null||!p.connected) continue;
+            if(p.connectionIndex>=(maxConnectionPlayer?.connectionIndex??0x00))maxConnectionPlayer=p;
+        }
+        if(maxConnectionPlayer==null)
+        {
+            serverSender.EndGame();
+            return;
+        }
+        maxConnectionPlayer.connectionIndex=player.connectionIndex;
+        player.connected=false;
+        if(turn==playerIndex&&!isSetupTime) StartTurn();
+        return;
     }
 
     public bool GameStarted()
