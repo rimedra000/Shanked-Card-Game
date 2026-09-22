@@ -2,6 +2,7 @@ using UnityEngine;
 using Unity.Networking.Transport;
 using Unity.Collections;
 using System;
+using System.Collections.Generic;
 
 
 public class ClientBehaviour : MonoBehaviour
@@ -11,6 +12,8 @@ public class ClientBehaviour : MonoBehaviour
     NetworkConnection m_Connection;
 
     NetworkPipeline m_Pipeline;
+
+    // List<Data> receivedDatas=new();
 
     public event EventHandler<Data> onDataReceived;
 
@@ -59,7 +62,9 @@ public class ClientBehaviour : MonoBehaviour
                 stream.ReadBytes(nativebytes);
                 var bytes = nativebytes.ToArray();
                 nativebytes.Dispose();
+                // Debug.Log("client :"+new Data(bytes));
                 onDataReceived.Invoke(this,new Data(bytes));
+                // receivedDatas.Add(new Data(bytes));
             }
             else if (cmd == NetworkEvent.Type.Disconnect)
             {

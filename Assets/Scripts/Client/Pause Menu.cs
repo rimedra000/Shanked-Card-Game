@@ -1,24 +1,24 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using UnityEngine.UI;
+// using UnityEngine.UI;
 
 public class PauseMenu : MonoBehaviour
 {
     // Start is called once before the first execution of Update after the MonoBehaviour is created
-    private Image backgroundImage;
-    void Awake()
-    {
-        backgroundImage=GetComponent<Image>();
-    }
+    // private Image backgroundImage;
+    // void Awake()
+    // {
+    //     backgroundImage=GetComponent<Image>();
+    // }
 
     // private void OnEnable() {
         
     // }
 
-    private void Start()
-    {
+    // private void Start()
+    // {
         
-    }
+    // }
     // Update is called once per frame
     // void Update()
     // {
