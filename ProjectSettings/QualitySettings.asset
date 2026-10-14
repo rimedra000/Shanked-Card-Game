@@ -112,7 +112,6 @@ QualitySettings:
     terrainFadeLength: 5
     terrainMaxTrees: 50
     excludedTargetPlatforms:
-    - WebGL
     - Server
   m_TextureMipmapLimitGroupNames: []
   m_PerPlatformDefaultQuality:
@@ -127,7 +126,7 @@ QualitySettings:
     Server: 0
     Stadia: 1
     Standalone: 1
-    WebGL: 0
+    WebGL: 1
     Windows Store Apps: 1
     XboxOne: 1
     iPhone: 1

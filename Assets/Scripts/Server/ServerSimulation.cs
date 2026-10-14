@@ -345,6 +345,7 @@ public class ServerSimulation : ServerSimulator
         if(cards.Length==0)return false;
         CardValue cardValue = cards[0].value;
         if(cards.Any(card=> card.value!=cardValue||!player.mainHand.Contains(card)))return false;
+        //TODO: check if cards are duplicates
         if(!ValidCard(cardValue))return false;
 
         playPile.InsertRange(0,cards);
