@@ -1,13 +1,14 @@
 shanked the card game but digital
 
 
-rules:
+game rules:
     shuffle 2 decks of playing cards
     all players 3 cards for their main hand, 3 cards for their shown cards, and 3 cards for hidden cards that are not seen by the players
     before any cards are placed on the play pile, players are free to swap cards from their hand and their shown cards
 
     
     play a higher or equal card on the play pile
+    you may play multiple cards of the same value
     ace is highest
     if the play pile is empty any card may be played
     wilds may be played on any card
