@@ -1,6 +1,7 @@
 ﻿<Solution>
-  <Project Path="ClientAssembly.csproj" />
-  <Project Path="CommonAssembly.csproj" />
   <Project Path="ServerAssembly.csproj" />
+  <Project Path="ClientAssembly.csproj" />
+  <Project Path="BotAssembly.csproj" />
+  <Project Path="CommonAssembly.csproj" />
   <Project Path="Tests.csproj" />
 </Solution>

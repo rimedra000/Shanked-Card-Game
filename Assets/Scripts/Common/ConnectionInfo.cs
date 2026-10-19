@@ -3,7 +3,7 @@ public readonly struct GameEventData
 {
     private readonly byte header;
     public readonly GameEvent gameEvent => (GameEvent)(header & 0x0F);
-    public readonly byte player => (byte)((header & 0b_0111_0000) >> 4);
+    public readonly byte player => (byte)((header & 0x70) >> 4);
     public readonly CardStruct[] cards;
 
     public readonly byte[] ToBytes()
@@ -35,6 +35,41 @@ public readonly struct GameEventData
     {
         return $"player:{player} Game Event:{gameEvent} cards:[{{{string.Join("} , {", cards)}}}]";        
     }
+
+    public bool isPrivate()
+    {
+        switch (gameEvent)
+            {
+                case GameEvent.PlayCards:
+                    return false;
+                case GameEvent.MoveShownCard:
+                    return false;
+                case GameEvent.MoveHiddenCard:
+                    return true;
+                case GameEvent.SwapHand:
+                    return true;
+                case GameEvent.DrawCards:
+                    return true;
+                case GameEvent.StartTurn:
+                    return false;
+                case GameEvent.ClearCards:
+                    return false;
+                case GameEvent.DealHiddenCards:
+                    return true;
+                case GameEvent.DealShownCards:
+                    return false;
+                case GameEvent.DealHandCards:
+                    return true;
+                case GameEvent.SwapCards:
+                    return false;
+                case GameEvent.Ready:
+                    return false;
+                case GameEvent.Shanked:
+                    return true;
+                default:
+                    return false;
+            }
+    }
 }
 
 public enum GameEvent : byte
@@ -47,7 +82,7 @@ public enum GameEvent : byte
     SwapHand = 0x4,        // private | server | swap hand 
     DrawCards = 0x5,       // private | server | draw cards 
     StartTurn = 0x6,       // public  | server | turn 
-    ClearPile = 0x7,       // public  | server | move play pile to discard pile 
+    ClearCards = 0x7,       // public  | server | move cards (whole pile or only jokers) to discard pile 
     DealHiddenCards = 0x8, // private | server | hidden cards 
     DealShownCards = 0x9,  // public  | server | shown cards 
     DealHandCards = 0xA,   // private | server | hand cards 
@@ -96,6 +131,19 @@ public readonly struct OtherEventData
     public override readonly string ToString()
     {
         return $"miscData:{miscData} Other Event:{otherEvent} miscBytes:[{{{string.Join("} , {", miscBytes)}}}]";        
+    }
+
+    public bool isPrivate()
+    {
+        switch (otherEvent)
+        {
+            case OtherEvent.AddPlayer:
+                return false;
+            case OtherEvent.RemovePlayer:
+                return false;
+            default:
+                return false;
+        }
     }
 }
 

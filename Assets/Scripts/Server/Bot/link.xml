@@ -1,0 +1,6 @@
+<linker>
+    <assembly fullname="MoonSharp.Interpreter" ignoreIfUnreferenced="1">
+        <type fullname="MoonSharp.*" preserve="all" />
+    </assembly>
+    <assembly fullname="BotAssembly" ignoreIfUnreferenced="1"/>
+</linker> 

@@ -5,6 +5,12 @@
             "name": "Attach to Unity",
             "type": "vstuc",
             "request": "attach"
+        },
+        {
+            "name": "MoonSharp Attach",
+            "type": "moonsharp-debug",
+            "request": "attach",
+            "debugServer" : 41912
         }
      ]
 }

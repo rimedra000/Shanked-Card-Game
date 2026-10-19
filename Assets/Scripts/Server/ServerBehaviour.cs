@@ -6,12 +6,12 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.Networking.Transport.Error;
 
-public class ServerBehaviour : MonoBehaviour, ServerSender
+public class ServerBehaviour : MonoBehaviour, IServerSender
 {
     NetworkDriver m_Driver;
     NativeList<NetworkConnection> m_Connections;
     NetworkPipeline m_Pipeline;
-    ServerSimulator serverSimulation;
+    IServerSimulator serverSimulation;
 
 #if CLIENT
     private void Awake()
@@ -21,7 +21,7 @@ public class ServerBehaviour : MonoBehaviour, ServerSender
 
 #endif
 
-    void Start()
+    private void Start()
     {
         Debug.Log("Server start.");
         m_Driver = NetworkDriver.Create(new WebSocketNetworkInterface());
@@ -37,6 +37,7 @@ public class ServerBehaviour : MonoBehaviour, ServerSender
         m_Driver.Listen();
 
         serverSimulation = new ServerSimulation(this);
+
     }
 
     public void EndGame()
@@ -62,6 +63,8 @@ public class ServerBehaviour : MonoBehaviour, ServerSender
             m_Driver.Dispose();
             m_Connections.Dispose();
         }
+
+        serverSimulation.Dispose();
     }
 
     void Update()
@@ -159,11 +162,4 @@ public class ServerBehaviour : MonoBehaviour, ServerSender
         }
 
     }
-}
-
-public interface ServerSender
-{
-    public void SendData(Data data, int id);
-    public void EndGame();
-
 }

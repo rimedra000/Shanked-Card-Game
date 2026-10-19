@@ -99,6 +99,20 @@ public static class CardExtensions
         return output;
     }
 
+    public static CardStruct[] SortCards(this CardStruct[] cards,CardValue[] sortOrder)
+    {
+        CardStruct[] output = new CardStruct[cards.Length];
+        int i=0;
+        foreach (CardValue value in sortOrder)
+        {
+            foreach (CardStruct card in cards)
+            {
+                if (card == value) output[i++]=card;
+            }
+        }
+        return output;
+    }
+
 }
 
 
