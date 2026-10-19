@@ -811,8 +811,8 @@ PlayerSettings:
   il2cppStacktraceInformation:
     Android: 1
   managedStrippingLevel:
-    Server: 3
-    Standalone: 3
+    Server: 4
+    Standalone: 4
   incrementalIl2cppBuild: {}
   suppressCommonWarnings: 1
   allowUnsafeCode: 0

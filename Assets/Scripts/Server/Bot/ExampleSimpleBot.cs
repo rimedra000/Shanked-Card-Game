@@ -1,7 +1,7 @@
-using UnityEngine;
-
 public class ExampleSimpleBot : SimpleBot
 {
+    public void Dispose(){}
+
     public string GetUsername()
     {
         return nameof(ExampleSimpleBot);

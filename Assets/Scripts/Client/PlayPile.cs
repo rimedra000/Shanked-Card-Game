@@ -42,7 +42,7 @@ public class PlayPile : MonoBehaviour
                     cards.Insert(0,MakeCard(card));
                 }
                 break;
-            case GameEvent.ClearPile:
+            case GameEvent.ClearCards:
                 // cards = cards.Except(e.cards).ToList(); 
                 foreach (CardStruct card in gameEventData.cards)
                 {

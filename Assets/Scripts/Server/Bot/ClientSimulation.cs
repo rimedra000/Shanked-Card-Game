@@ -1,10 +1,11 @@
 using System.Collections.Generic;
+using System.Linq;
 public class ClientSimulation
 {
     //TODO: fix a lot
     private List<CardStruct> playPile = new();
     private byte drawPileCount = 108;//((13*4)+2)*2
-    private List<CardStruct> discardPile = new();
+    private Stack<CardStruct> discardPile = new();
     private byte turn = 0;
     private byte clientId;
     private bool isSetupTime = true;
@@ -52,19 +53,22 @@ public class ClientSimulation
                     turn=id;
                     isSetupTime=false;
                     break;
-                case GameEvent.ClearPile:
-                    discardPile.InsertRange(0,cards);
+                case GameEvent.ClearCards:
+                    discardPile.PushMany(cards);
                     if(cards.Length==playPile.Count)playPile.Clear();
                     else foreach (var card in cards)playPile.Remove(card);
                     break;
                 case GameEvent.DealHiddenCards:
                     player.hiddenCards=new(cards);
+                    drawPileCount-= (byte)cards.Length;
                     break;
                 case GameEvent.DealShownCards:
                     player.shownCards=new(cards);
+                    drawPileCount-= (byte)cards.Length;
                     break;
                 case GameEvent.DealHandCards:
                     player.mainHand=new(cards);
+                    drawPileCount-= (byte)cards.Length;
                     break;
                 case GameEvent.SwapCards:
                     player.shownCards.Remove(cards[0]);
@@ -92,7 +96,7 @@ public class ClientSimulation
                     break;
                 case OtherEvent.RemovePlayer:
                     players[otherEventData.miscData]=null;
-                    discardPile.InsertRange(0,otherEventData.miscBytes.ToCardStructArray());
+                    discardPile.PushMany(otherEventData.miscBytes.ToCardStructArray());
                     break;
             }
         }
@@ -111,9 +115,9 @@ public class ClientSimulation
         {
             Player p=players[i];
             if(p==null)continue;
-            playerStates[i]=new(p.mainHand.ToArray(),p.shownCards.ToArray(),p.hiddenCards.ToArray(),p.ready);
+            playerStates[i]=new(p.mainHand,p.shownCards,p.hiddenCards,p.ready);
         }
-        return new ClientState(playerStates,!isSetupTime,playPile.ToArray(),discardPile.ToArray(),drawPileCount,turn,clientId);
+        return new ClientState(playerStates,!isSetupTime,playPile,discardPile,drawPileCount,turn,clientId);
     }
 }
 
@@ -129,13 +133,13 @@ public readonly struct ClientState
     public readonly byte clientId;
     public readonly PlayerState selfPlayer => players[clientId];
 
-    public ClientState(PlayerState[] players, bool isGameStarted, CardStruct[] playPile,
-        CardStruct[] discardPile, byte drawCardsRemaining, byte turn, byte clientId)
+    public ClientState(PlayerState[] players, bool isGameStarted, IEnumerable<CardStruct> playPile,
+        IEnumerable<CardStruct> discardPile, byte drawCardsRemaining, byte turn, byte clientId)
     {
         this.players=players;
         this.isGameStarted=isGameStarted;
-        this.playPile=playPile;
-        this.discardPile=discardPile;
+        this.playPile=playPile.ToArray();
+        this.discardPile=discardPile.ToArray();
         this.drawCardsRemaining=drawCardsRemaining;
         this.turn=turn;
         this.clientId=clientId;
@@ -170,11 +174,11 @@ public readonly struct PlayerState
     public readonly CardStruct[] hiddenCards;
     public readonly bool isReady;
 
-    public PlayerState(CardStruct[] mainHand, CardStruct[] shownCards, CardStruct[] hiddenCards, bool isReady)
+    public PlayerState(IEnumerable<CardStruct> mainHand, IEnumerable<CardStruct> shownCards, IEnumerable<CardStruct> hiddenCards, bool isReady)
     {
-        this.mainHand=mainHand;
-        this.shownCards=shownCards;
-        this.hiddenCards=hiddenCards;
+        this.mainHand=mainHand.ToArray();
+        this.shownCards=shownCards.ToArray();
+        this.hiddenCards=hiddenCards.ToArray();
         this.isReady=isReady;
     }
 

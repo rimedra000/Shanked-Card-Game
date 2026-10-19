@@ -1,0 +1,54 @@
+bots can be launched with launch arg
+    bot={PathToScript}
+
+required 
+    username must be a defined string
+required functions
+    CardStruct[] pick_from_filtered_main_hand(CardStruct[] filteredCards,ClientState clientState)
+    CardStruct pick_from_shown_cards(CardStruct[] cards,ClientState clientState)
+    (CardStruct toMainHand,CardStruct toShownCards) setup_shown_cards(CardStruct[] mainHand,CardStruct[] shownCards)
+types
+    CardStruct
+        CardValue value
+        CardSuit suit
+        CardDeck deck
+    ClientState
+        PlayerState[] players;
+        bool isGameStarted;
+        CardStruct[] playPile;
+        CardStruct[] discardPile;
+        byte drawCardsRemaining;
+        byte turn;
+        byte clientId;
+        PlayerState selfPlayer => players[clientId];
+        bool ValidCard(CardValue cardVal)
+    PlayerState
+        CardStruct[] mainHand;
+        CardStruct[] shownCards;
+        CardStruct[] hiddenCards;
+        bool isReady;
+    enum CardValue
+        Ace
+        Two
+        Three
+        Four
+        Five
+        Six
+        Seven
+        Eight
+        Nine
+        Ten
+        Jack
+        Queen
+        King
+        Joker
+        Blank
+    enum CardSuit
+        Spades
+        Diamonds
+        Clubs
+        Hearts
+    enum CardDeck
+        One
+        Two
+

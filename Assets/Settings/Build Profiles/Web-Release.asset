@@ -743,7 +743,7 @@ MonoBehaviour:
     - line: '|   il2cppStacktraceInformation:'
     - line: '|     Android: 1'
     - line: '|   managedStrippingLevel:'
-    - line: '|     WebGL: 3'
+    - line: '|     WebGL: 4'
     - line: '|   incrementalIl2cppBuild: {}'
     - line: '|   suppressCommonWarnings: 1'
     - line: '|   allowUnsafeCode: 0'

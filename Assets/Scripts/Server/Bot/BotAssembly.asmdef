@@ -1,0 +1,18 @@
+{
+    "name": "BotAssembly",
+    "rootNamespace": "",
+    "references": [
+        "GUID:b853308904cd452e2d727af5319566ce",
+        "GUID:9b15041abfbc787cccbe1fb0aa1c24b9",
+        "GUID:a022ba36d454e1b37bb250e08bd293b4"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

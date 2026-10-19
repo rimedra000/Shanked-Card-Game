@@ -838,7 +838,7 @@ MonoBehaviour:
     - line: '|     Android: 1'
     - line: '|     Server: 1'
     - line: '|   managedStrippingLevel:'
-    - line: '|     Server: 3'
+    - line: '|     Server: 4'
     - line: '|     Standalone: 3'
     - line: '|   incrementalIl2cppBuild: {}'
     - line: '|   suppressCommonWarnings: 1'

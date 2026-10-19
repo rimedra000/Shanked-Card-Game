@@ -1,6 +1,5 @@
 using System;
 using System.Linq;
-using UnityEngine;
 
 public class SimpleBotHost : BotHost
 {
@@ -102,10 +101,15 @@ public class SimpleBotHost : BotHost
     {
         return simpleBot.GetUsername()+id;
     }
+
+    public void Dispose()
+    {
+        simpleBot.Dispose();
+    }
 }
 
 
-public interface SimpleBot
+public interface SimpleBot : IDisposable
 {
     /// <summary>
     /// If toMainHand is in shownCards and toShownCards is in mainHand,
