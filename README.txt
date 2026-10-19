@@ -39,4 +39,4 @@ build dep:
 
     MoonSharp (https://github.com/moonsharp-devs/moonsharp)
             org.moonsharp.moonsharp (3.0.0-beta.1)
-            org.moonsharp.moonsharp (3.0.0-beta.1)
+            org.moonsharp.debugger.vscode (3.0.0-beta.1)
