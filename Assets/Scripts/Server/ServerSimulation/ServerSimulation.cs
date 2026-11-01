@@ -12,7 +12,7 @@ public partial class ServerSimulation : IServerSimulator
     private byte turn = 0;
     private byte turnOffset = 0;
     private bool isSetupTime = true;
-    private bool isWaitingForPlayers = true;
+    private bool botsInitialzied = false;
     private Player[] players = new Player[8];
     private class Player
     {
@@ -38,12 +38,14 @@ public partial class ServerSimulation : IServerSimulator
 
     private List<Data> pastData = new();
 
-    private Queue<(GameEventData, int)> BotSentDataQueue = new();
+    private Queue<(GameEventData, byte)> BotSentDataQueue = new();
+
+    const int BOT_CALL_MAX_LOOP_COUNT = 1000;
 
     public ServerSimulation(IServerSender serverSender, Random random = null)
     {
         this.serverSender = serverSender;
-        
+
 #if !SHORT_CARDS
         CardStruct[] tempCards = new CardStruct[108];
         {
@@ -64,11 +66,24 @@ public partial class ServerSimulation : IServerSimulator
                 }
             }
         }
+
+        // CardStruct[] tempCards2 =new byte[]
+        // {
+        //     0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0A, 0x0B, 0x0C, 0x0D, 0x0E,
+        //     0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17, 0x18, 0x19, 0x1A, 0x1B, 0x1C, 0x1D, 
+        //     0x21, 0x22, 0x23, 0x24, 0x25, 0x26, 0x27, 0x28, 0x29, 0x2A, 0x2B, 0x2C, 0x2D, 0x2E,
+        //     0x31, 0x32, 0x33, 0x34, 0x35, 0x36, 0x37, 0x38, 0x39, 0x3A, 0x3B, 0x3C, 0x3D, 
+        //     0x41, 0x42, 0x43, 0x44, 0x45, 0x46, 0x47, 0x48, 0x49, 0x4A, 0x4B, 0x4C, 0x4D, 0x4E,
+        //     0x51, 0x52, 0x53, 0x54, 0x55, 0x56, 0x57, 0x58, 0x59, 0x5A, 0x5B, 0x5C, 0x5D, 
+        //     0x61, 0x62, 0x63, 0x64, 0x65, 0x66, 0x67, 0x68, 0x69, 0x6A, 0x6B, 0x6C, 0x6D, 0x6E,
+        //     0x71, 0x72, 0x73, 0x74, 0x75, 0x76, 0x77, 0x78, 0x79, 0x7A, 0x7B, 0x7C, 0x7D, 
+        // }.ToCardStructArray();
+
 #else
         CardStruct[] tempCards=new byte[]{1,2,3,4,5,6,7,8,9,10,11,12,13,14}.ToCardStructArray();
 #endif
         //shuffle all cards
-        Random r = random ?? (ServerConfig.rngSeed.HasValue?new Random(ServerConfig.rngSeed.Value):new Random());
+        Random r = random ?? (ServerConfig.rngSeed.HasValue ? new Random(ServerConfig.rngSeed.Value) : new Random());
         for (int i = tempCards.Length - 1; i > 1; i--)
         {
             int randomIndex = r.Next(0, i);
@@ -76,22 +91,10 @@ public partial class ServerSimulation : IServerSimulator
             tempCards[randomIndex] = tempCards[i];
             tempCards[i] = tempCard;
         }
-
         drawPile = new(tempCards);
-
-
     }
 
-    private void BotSendDataIntercept(GameEventData data, int id)
-    {
-        bool success = BotReceiveData(data, id);
-        if (!success)
-        {
-            RemovePlayer((byte)id);
-        }
-    }
-
-    private bool AddPlayer(OtherEventData data, int connectionId)
+    private bool AddPlayer(OtherEventData data, byte connectionId)
     {
         byte id = data.miscData;
         foreach (Player p in players) if (p != null && p.connected && p.connectionIndex == connectionId) return false;
@@ -101,7 +104,7 @@ public partial class ServerSimulation : IServerSimulator
             if (reconnectedPlayer.connected == true) return false;
             else
             {
-                reconnectedPlayer.connectionIndex = (byte)connectionId;
+                reconnectedPlayer.connectionIndex = connectionId;
                 reconnectedPlayer.connected = true;
                 foreach (Data oldData in pastData)
                 {
@@ -112,11 +115,34 @@ public partial class ServerSimulation : IServerSimulator
         }
         if (!isSetupTime) return false;
         if (!trygetstringfrombytes(data.miscBytes, out var username)) return false;
+        AddPlayer(id, username, connectionId: connectionId);
+        return true;
+    }
+
+    private bool AddBot(BotHost botHost, byte id)
+    {
+        string username;
+        try
+        {
+            username = botHost.GetUsername();
+        }
+        catch (Exception e)
+        {
+            ServerConfig.DebugLog(e.ToString());
+            return false;
+        }
+        AddPlayer(id, username, botHost: botHost);
+        return true;
+    }
+
+    private void AddPlayer(byte id, string username, byte? connectionId = null, BotHost botHost = null)
+    {
         Player player = new Player
         {
             username = username,
-            connectionIndex = (byte)connectionId,
-            connected = true
+            connectionIndex = connectionId,
+            connected = true,
+            botHost = botHost,
 
         };
         players[id] = player;
@@ -126,26 +152,27 @@ public partial class ServerSimulation : IServerSimulator
             SendData(isPrivateData(oldData, id) ? CensorData(oldData) : oldData, id);
         }
 
-        SendToAll(data);
+        var usernameBytes = Encoding.UTF8.GetBytes(username);
+        SendToAll(new OtherEventData(id, OtherEvent.AddPlayer, usernameBytes));
 
         DealHandCards(id);
         DealShownCards(id);
         DealHiddenCards(id);
-        if (isWaitingForPlayers)
+        if (!botsInitialzied)
         {
-            isWaitingForPlayers = false;
+            botsInitialzied = true;
             initBots();
         }
-        return true;
+        return;
     }
 
     private void initBots()
     {
         foreach (string botPath in ServerConfig.botPaths)
         {
-            var botIndexn = GetNextEmptyPlayerSlot();
+            byte? botIndexn = GetNextEmptyPlayerSlot();
             if (!botIndexn.HasValue) return;
-            var botIndex = botIndexn.Value;
+            byte botIndex = botIndexn.Value;
             try
             {
                 AddBot(new SimpleBotHost(new MoonSharpBotHost(botPath), d => BotSentDataQueue.Enqueue((d, botIndex)), botIndex), botIndex);
@@ -161,39 +188,6 @@ public partial class ServerSimulation : IServerSimulator
             for (byte i = 0; i < players.Length; i++) if (players[i] == null) return i;
             return null;
         }
-    }
-    private bool AddBot(BotHost botHost, byte id)
-    {
-        string username;
-        try
-        {
-            username = botHost.GetUsername();
-        }
-        catch (Exception e)
-        {
-            ServerConfig.DebugLog(e.ToString());
-            return false;
-        }
-
-        Player player = new Player
-        {
-            username = username,
-            connected = true,
-            botHost = botHost
-        };
-        players[id] = player;
-
-        foreach (Data oldData in pastData)
-        {
-            SendData(isPrivateData(oldData, id) ? CensorData(oldData) : oldData, id);
-        }
-        var usernameBytes = Encoding.UTF8.GetBytes(username);
-        SendToAll(new OtherEventData(id, OtherEvent.AddPlayer, usernameBytes));
-
-        DealHandCards(id);
-        DealShownCards(id);
-        DealHiddenCards(id);
-        return true;
     }
 
     bool trygetstringfrombytes(byte[] bytes, out string output)
@@ -229,11 +223,11 @@ public partial class ServerSimulation : IServerSimulator
 
     private void SendToAll(GameEventData data)
     {
-        int id = data.player;
+        byte id = data.player;
         SendData(data, id);
 
         GameEventData CensoredData = data.isPrivate() ? CensorData(data) : data;
-        for (int i = 0; i < players.Length; i++)
+        for (byte i = 0; i < players.Length; i++)
         {
             if (i == id) continue;
             SendData(CensoredData, i);
@@ -243,7 +237,7 @@ public partial class ServerSimulation : IServerSimulator
     private void SendToAll(OtherEventData data)
     {
         //TODO: check other event for who to send to
-        for (int i = 0; i < players.Length; i++)
+        for (byte i = 0; i < players.Length; i++)
         {
             SendData(data, i);
         }
@@ -271,19 +265,12 @@ public partial class ServerSimulation : IServerSimulator
 
     public bool ReceiveData(Data data, int connectionId)
     {
-        bool result = false;
         if (data.isGameEventData())
         {
             GameEventData gameEventData = data.GetGameEventData();
             if (players[gameEventData.player].connectionIndex != connectionId) return false;
-            result = ReceiveGameEventData(gameEventData);
-
-
-            for (int i = 0; i < 1000 && BotSentDataQueue.Count > 0; i++)
-            {
-                var (a, b) = BotSentDataQueue.Dequeue();
-                BotSendDataIntercept(a, b);
-            }
+            bool result = ReceiveGameEventData(gameEventData);
+            CallBots();
             return result;
         }
         else if (data.isOtherEventData())
@@ -291,10 +278,20 @@ public partial class ServerSimulation : IServerSimulator
             OtherEventData otherEventData = data.GetOtherEventData();
             OtherEvent otherEvent = otherEventData.otherEvent;
             if (otherEvent == OtherEvent.AddPlayer)
-                return AddPlayer(otherEventData, connectionId);
+                return AddPlayer(otherEventData, (byte)connectionId);
             return false;
         }
         return false;
+    }
+
+    private void CallBots()
+    {
+        for (int i = 0; i < BOT_CALL_MAX_LOOP_COUNT && BotSentDataQueue.Count > 0; i++)
+        {
+            (GameEventData data, byte id) = BotSentDataQueue.Dequeue();
+            if (!BotReceiveData(data, id))
+                RemovePlayer(id);
+        }
     }
 
     private bool BotReceiveData(GameEventData gameEventData, int playerIndex)
@@ -414,8 +411,6 @@ public partial class ServerSimulation : IServerSimulator
 
     public void PlayerDisconnect(int id)
     {
-
-        // if (players[id]==null) return;
         int playerIndex = -1;
         for (int i = 0; i < players.Length; i++)
         {
@@ -423,7 +418,6 @@ public partial class ServerSimulation : IServerSimulator
             if (p == null || !p.connected) continue;
             if (p.connectionIndex == id) { playerIndex = i; break; }
         }
-        // if(playerIndex<0)return;
         Player player = players[playerIndex];
 
         Player maxConnectionPlayer = null;
@@ -432,11 +426,6 @@ public partial class ServerSimulation : IServerSimulator
             if (p == null || !p.connected) continue;
             if (p.connectionIndex >= (maxConnectionPlayer?.connectionIndex ?? 0x00)) maxConnectionPlayer = p;
         }
-        // if(maxConnectionPlayer==null)
-        // {
-        //     serverSender.EndGame();
-        //     return;
-        // }
         maxConnectionPlayer.connectionIndex = player.connectionIndex;
         player.connected = false;
         player.connectionIndex = null;
@@ -446,7 +435,7 @@ public partial class ServerSimulation : IServerSimulator
 
     public bool GameStarted() => !isSetupTime;
 
-    public void SendData(Data data, int id)
+    public void SendData(Data data, byte id)
     {
         Player player = players[id];
         if (player == null) return;
@@ -463,34 +452,18 @@ public partial class ServerSimulation : IServerSimulator
             }
             catch (Exception e)
             {
-                // RemovePlayer(player);
-                // if (e is MoonSharp.Interpreter.InterpreterException)
-                // {
-                //     MoonSharp.Interpreter.InterpreterException ie = (MoonSharp.Interpreter.InterpreterException)e;
-                //     LogError(ie.DecoratedMessage);
-                // }
-                // else
                 ServerConfig.DebugLog(e.ToString());
-
-
-                RemovePlayer((byte)id);
+                RemovePlayer(id);
             }
 
         }
     }
 
-    // void Log(string s)
-    // {
-    //     serverSender.Log(s);
-    // }
 
     public void Dispose()
     {
-        for (int i = 0; i < players.Length; i++)
-        {
-            Player p = players[i];
-            if(p==null)return;
-            p.botHost?.Dispose();
-        }
+        foreach (Player p in players)
+            p?.botHost?.Dispose();
+
     }
 }
