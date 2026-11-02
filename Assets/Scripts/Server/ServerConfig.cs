@@ -17,7 +17,7 @@ public class ServerConfig
     {
         string[] args = Environment.GetCommandLineArgs();
 #if UNITY_EDITOR
-        botPaths.Add("/home/ricardo/Unnamed Card Game/Assets/Scripts/Server/Bot/MoonSharp/BotScripts/TestMoonSharpScript.lua");
+        botPaths.Add($"{Application.dataPath}/Scripts/Server/Bot/MoonSharp/BotScripts/TestMoonSharpScript.lua");
 #endif
         ifArg("port", s =>
         {

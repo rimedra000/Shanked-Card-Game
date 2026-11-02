@@ -805,9 +805,9 @@ PlayerSettings:
   il2cppCompilerConfiguration:
     Android: 0
     Server: 2
-    WebGL: 0
+    WebGL: 2
   il2cppCodeGeneration:
-    WebGL: 1
+    WebGL: 0
   il2cppStacktraceInformation:
     Android: 1
   managedStrippingLevel:

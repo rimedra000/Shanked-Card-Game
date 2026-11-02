@@ -176,7 +176,7 @@ public partial class ServerSimulation
         {
             foreach (Player player in players)
             {
-                if(isPlaying(player))return false;
+                if(isPlaying(player)&&player.botHost==null)return false;
             }
             return true;
         }
