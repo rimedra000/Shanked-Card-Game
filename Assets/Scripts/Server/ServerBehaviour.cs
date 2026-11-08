@@ -98,14 +98,14 @@ public class ServerBehaviour : MonoBehaviour, IServerSender
             nativebytes.Dispose();
 
             // OtherEventData data = new OtherEventData((byte)id,OtherEvent.AddPlayer);
-            Data data = serverSimulation.NewConnection(id, bytes);
+            Data data = serverSimulation.NewConnection((byte)id, bytes);
             SendData(data, id);
 
 
             // Debug.Log("Accepted a connection.");
         }
 
-        for (int i = 0; i < m_Connections.Length; i++)
+        for (byte i = 0; i < m_Connections.Length; i++)
         {
             DataStreamReader stream;
             NetworkEvent.Type cmd;
@@ -130,7 +130,7 @@ public class ServerBehaviour : MonoBehaviour, IServerSender
             }
             sendDelayedData();
         }
-
+        serverSimulation.Compute();
     }
     List<Queue<Data>> dataQueueList = new(){};
 

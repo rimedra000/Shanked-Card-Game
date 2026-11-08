@@ -109,7 +109,7 @@ public partial class ServerSimulation
 
     private void SwapHand(int offset)
     {
-        List<CardStruct>[] handsCopy =new List<CardStruct>[8];
+        List<CardStruct>[] handsCopy = new List<CardStruct>[8];
         for (int i = 0; i < players.Length; i++)
             handsCopy[i] = players[i]?.mainHand;
 
@@ -176,7 +176,7 @@ public partial class ServerSimulation
         {
             foreach (Player player in players)
             {
-                if(isPlaying(player)&&player.botHost==null)return false;
+                if (isPlaying(player) && player.botHost == null) return false;
             }
             return true;
         }

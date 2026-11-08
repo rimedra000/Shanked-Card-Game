@@ -43,7 +43,6 @@ function pick_from_filtered_main_hand(filteredCards, clientState)
             break
         end
     end
-    print(#result)
     return result
 end
 

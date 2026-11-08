@@ -1,8 +1,10 @@
 using System;
 public interface IServerSimulator : IDisposable
 {
-    public bool ReceiveData(Data data,int id);
-    public Data NewConnection(int id,byte[] bytes);
-    public void PlayerDisconnect(int id);
+    public void ReceiveData(Data data,byte id);
+    public Data NewConnection(byte id,byte[] bytes);
+    public void PlayerDisconnect(byte id);
+
+    public void Compute();
     public bool GameStarted();
 }
