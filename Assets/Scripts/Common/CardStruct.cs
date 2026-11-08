@@ -119,36 +119,36 @@ public static class CardExtensions
 public enum CardValue : byte
 {
     //0 reserved
-    Ace=1,
-    Two=2,
-    Three=3,
-    Four=4,
-    Five=5,
-    Six=6,
-    Seven=7,
-    Eight=8,
-    Nine=9,
-    Ten=10,//a
-    Jack=11,//b
-    Queen=12,//c
-    King=13,//d
-    Joker=14,//e
-    //f
+    Ace=0x01,
+    Two=0x02,
+    Three=0x03,
+    Four=0x04,
+    Five=0x05,
+    Six=0x06,
+    Seven=0x07,
+    Eight=0x08,
+    Nine=0x09,
+    Ten=0x0A,//10
+    Jack=0x0B,//11
+    Queen=0x0C,//12
+    King=0x0D,//13
+    Joker=0x0E,//14
+    //15 f
     Blank=0x80
 
 }
 
 public enum CardSuit : byte
 {
-    Spades=0<<4,
-    Diamonds=1<<4,
-    Clubs=2<<4,
-    Hearts=3<<4
+    Spades=0x00,
+    Diamonds=0x10,
+    Clubs=0x20,
+    Hearts=0x30
 
 }
 
 public enum CardDeck : byte
 {
-    One=0<<6,
-    Two=1<<6
+    One=0x00,
+    Two=0x40
 }

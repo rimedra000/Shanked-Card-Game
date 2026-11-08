@@ -1,4 +1,4 @@
-#define SHORT_CARDS
+// #define SHORT_CARDS
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -49,8 +49,6 @@ public partial class ServerSimulation : IServerSimulator
         CardStruct[] tempCards = new CardStruct[108];
         {
             int i = 0;
-
-            // #if !SHORT_CARDS
             //create all cards
             foreach (CardDeck deck in Enum.GetValues(typeof(CardDeck)))
             {
