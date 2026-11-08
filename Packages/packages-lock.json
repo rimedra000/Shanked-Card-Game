@@ -230,20 +230,20 @@
       }
     },
     "com.unity.sdk.linux-arm64": {
-      "version": "1.1.0",
+      "version": "1.1.1",
       "depth": 0,
       "source": "registry",
       "dependencies": {
-        "com.unity.sysroot.base": "1.1.0"
+        "com.unity.sysroot.base": "1.1.1"
       },
       "url": "https://packages.unity.com"
     },
     "com.unity.sdk.linux-x86_64": {
-      "version": "1.1.0",
+      "version": "1.1.1",
       "depth": 0,
       "source": "registry",
       "dependencies": {
-        "com.unity.sysroot.base": "1.1.0"
+        "com.unity.sysroot.base": "1.1.1"
       },
       "url": "https://packages.unity.com"
     },
@@ -264,7 +264,7 @@
       }
     },
     "com.unity.sysroot.base": {
-      "version": "1.1.0",
+      "version": "1.1.1",
       "depth": 1,
       "source": "registry",
       "dependencies": {},
@@ -303,11 +303,11 @@
       "url": "https://packages.unity.com"
     },
     "com.unity.toolchain.linux-x86_64-linux": {
-      "version": "1.1.0",
+      "version": "1.1.1",
       "depth": 0,
       "source": "registry",
       "dependencies": {
-        "com.unity.sysroot.base": "1.1.0"
+        "com.unity.sysroot.base": "1.1.1"
       },
       "url": "https://packages.unity.com"
     },
@@ -332,18 +332,20 @@
       }
     },
     "org.moonsharp.debugger.vscode": {
-      "version": "file:../../Downloads/org.moonsharp.debugger.vscode-3.0.0-beta.1.tgz",
+      "version": "https://github.com/moonsharp-devs/moonsharp.git?path=/debugger/vscode#upm/beta/v3.0",
       "depth": 0,
-      "source": "local-tarball",
+      "source": "git",
       "dependencies": {
         "org.moonsharp.moonsharp": "3.0.0-beta.1"
-      }
+      },
+      "hash": "0fb8ba9106c44b140b8f56cb44cb1b50b358897c"
     },
     "org.moonsharp.moonsharp": {
-      "version": "file:../../Downloads/org.moonsharp.moonsharp-3.0.0-beta.1.tgz",
+      "version": "https://github.com/moonsharp-devs/moonsharp.git?path=/interpreter#upm/beta/v3.0",
       "depth": 0,
-      "source": "local-tarball",
-      "dependencies": {}
+      "source": "git",
+      "dependencies": {},
+      "hash": "0fb8ba9106c44b140b8f56cb44cb1b50b358897c"
     },
     "com.unity.modules.accessibility": {
       "version": "1.0.0",
