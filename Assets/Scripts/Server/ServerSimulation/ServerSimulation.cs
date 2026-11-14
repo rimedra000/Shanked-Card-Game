@@ -273,7 +273,8 @@ public partial class ServerSimulation : IServerSimulator
         if (data.isGameEventData())
         {
             GameEventData gameEventData = data.GetGameEventData();
-            if (players[gameEventData.player].connectionIndex == connectionId)
+            Player player = players[gameEventData.player];
+            if (player!=null && player.connectionIndex == connectionId)
             {
                 SentGameEventDataQueue.Enqueue(gameEventData);
             }
