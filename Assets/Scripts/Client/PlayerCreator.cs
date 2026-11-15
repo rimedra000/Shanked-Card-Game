@@ -7,7 +7,7 @@ public class PlayerCreator : MonoBehaviour
     private int selfPlayerId=-1;
     void Start()
     {
-        ClientBehaviour.instance.onDataReceived += ReceiveData;
+        WebSocketClientBehaviour.instance.onDataReceived += ReceiveData;
     }
 
     private void ReceiveData(object _, Data data)

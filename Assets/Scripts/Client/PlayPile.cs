@@ -74,7 +74,7 @@ public class PlayPile : MonoBehaviour
 
     private void Start()
     {
-        ClientBehaviour.instance.onDataReceived += ReceiveData;
+        WebSocketClientBehaviour.instance.onDataReceived += ReceiveData;
         // cardHands[cardHandIndex].StartTurn();
     }
 

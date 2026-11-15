@@ -9,7 +9,7 @@ public class DrawPile : MonoBehaviour
     
     private void Start()
     {
-        ClientBehaviour.instance.onDataReceived += ReceiveData;
+        WebSocketClientBehaviour.instance.onDataReceived += ReceiveData;
         for (int i = 0; i < 108; i++)
         {
             Instantiate(cardPrefab,transform);

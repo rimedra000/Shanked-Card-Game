@@ -128,8 +128,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 65887712}
-  - component: {fileID: 65887711}
   - component: {fileID: 65887713}
+  - component: {fileID: 65887714}
   m_Layer: 0
   m_Name: Server
   m_TagString: Untagged
@@ -137,18 +137,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &65887711
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 65887710}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 61f0eb18e74db578e9ffd179429a10d4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::ServerBehaviour
 --- !u!4 &65887712
 Transform:
   m_ObjectHideFlags: 0
@@ -173,8 +161,20 @@ MultiplayerRolesData:
   m_GameObject: {fileID: 65887710}
   m_GameObjectRolesMask: 2
   m_ComponentsRolesMasks:
-  - m_Object: {fileID: 65887711}
+  - m_Object: {fileID: 65887714}
     m_RolesMask: 2
+--- !u!114 &65887714
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 65887710}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9ca442f70504621b7a900629fa3cd064, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: ServerAssembly::WebSocketServerBehaviour
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

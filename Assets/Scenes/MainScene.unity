@@ -739,7 +739,6 @@ MonoBehaviour:
   button: {fileID: 958947161}
   readyButton: {fileID: 665529762}
   playPile: {fileID: 1866851299}
-  clientBehaviour: {fileID: 1467599944}
   buttonText: {fileID: 468446989}
   selectOffset: 10
 --- !u!114 &306677682
@@ -2422,8 +2421,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1467599945}
-  - component: {fileID: 1467599944}
   - component: {fileID: 1467599946}
+  - component: {fileID: 1467599947}
   m_Layer: 0
   m_Name: client
   m_TagString: Untagged
@@ -2431,18 +2430,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1467599944
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1467599943}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 76863833ba31c04b486c6dd6889b8af7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::ClientBehaviour
 --- !u!4 &1467599945
 Transform:
   m_ObjectHideFlags: 0
@@ -2467,8 +2454,20 @@ MultiplayerRolesData:
   m_GameObject: {fileID: 1467599943}
   m_GameObjectRolesMask: 1
   m_ComponentsRolesMasks:
-  - m_Object: {fileID: 1467599944}
+  - m_Object: {fileID: 1467599947}
     m_RolesMask: 1
+--- !u!114 &1467599947
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1467599943}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dd65d118885e65f51a7a4ec560eb6cc3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: ClientAssembly::WebSocketClientBehaviour
 --- !u!1 &1719731496
 GameObject:
   m_ObjectHideFlags: 0

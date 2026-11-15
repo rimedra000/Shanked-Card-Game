@@ -20,7 +20,7 @@ public class Player : MonoBehaviour
     [SerializeField] private Button button;
     [SerializeField] private Button readyButton;
     [SerializeField] private PlayPile playPile;
-    [SerializeField] private ClientBehaviour clientBehaviour;
+    // [SerializeField] private WebSocketClientBehaviour clientBehaviour;
     [SerializeField] private TextMeshProUGUI buttonText;
 
     private int playerID=-1;
@@ -36,7 +36,7 @@ public class Player : MonoBehaviour
     { 
         button.onClick.AddListener(PlayerConfirm);
         readyButton.onClick.AddListener(ReadyConfirm);
-        clientBehaviour.onDataReceived += ReceiveData;
+        WebSocketClientBehaviour.instance.onDataReceived += ReceiveData;
     }
 
     private void ReceiveData(object _, Data data)
@@ -545,7 +545,7 @@ public class Player : MonoBehaviour
 
     private void SendData(Data data)
     {
-        clientBehaviour.sendData(data);
+        WebSocketClientBehaviour.instance.sendData(data);
     }
 
 

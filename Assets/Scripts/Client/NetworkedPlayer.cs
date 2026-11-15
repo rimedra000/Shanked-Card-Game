@@ -26,7 +26,7 @@ public class NetworkedPlayer : MonoBehaviour
 
     private void Awake()
     {
-        ClientBehaviour.instance.onDataReceived += ReceiveData;
+        WebSocketClientBehaviour.instance.onDataReceived += ReceiveData;
         var c = background.color;
         c.a=0;
         background.color=c;
@@ -115,7 +115,7 @@ public class NetworkedPlayer : MonoBehaviour
 
     private void RemovePlayer()
     {
-        ClientBehaviour.instance.onDataReceived -= ReceiveData;
+        WebSocketClientBehaviour.instance.onDataReceived -= ReceiveData;
         
         Destroy(gameObject);
     }

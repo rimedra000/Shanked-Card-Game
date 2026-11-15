@@ -15,7 +15,7 @@ public class DiscardPile : MonoBehaviour
 
     private void Start() {
         // instance = this;
-        ClientBehaviour.instance.onDataReceived += ReceiveData;
+        WebSocketClientBehaviour.instance.onDataReceived += ReceiveData;
     }
 
     private void ReceiveData(object _, Data data)
