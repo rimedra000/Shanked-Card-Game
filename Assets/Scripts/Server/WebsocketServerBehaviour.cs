@@ -23,7 +23,7 @@ public class WebSocketServerBehaviour : MonoBehaviour, IServerSender
     {
         serverSimulation = new(this);
         Debug.Log("Server start.");
-        wsServer = new WebSocketServer("ws://localhost:31070");
+        wsServer = new WebSocketServer(ServerConfig.HostUrl);
         wsServer.AddWebSocketService<CardGameService>("/", s => { s.idList = idList; s.serverSimulation = serverSimulation; });
         wsServer.Start();
     }

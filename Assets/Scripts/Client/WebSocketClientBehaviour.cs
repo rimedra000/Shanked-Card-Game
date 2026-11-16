@@ -25,7 +25,7 @@ public class WebSocketClientBehaviour : MonoBehaviour
     private void Start()
     {
         Debug.Log("client start");
-        wsClient = new("ws://localhost:31070");
+        wsClient = new(ClientConfig.ConnectionUrl);
         wsClient.OnMessage += (_,e) => {dataQueue.Enqueue(new Data(e.RawData)); };
         wsClient.OnClose += (_,_) => {UnityEngine.SceneManagement.SceneManager.LoadScene(0);};
         byte[] name = System.Text.Encoding.UTF8.GetBytes(ClientConfig.username);

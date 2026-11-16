@@ -1,5 +1,4 @@
 using TMPro;
-using Unity.Networking.Transport;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -9,12 +8,12 @@ public class MainMenu : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     [SerializeField] private Button playButton;
     [SerializeField] private Button hostButton;
-    [SerializeField] private TMP_InputField ipField;
+    [SerializeField] private TMP_InputField urlField;
     [SerializeField] private TMP_InputField nameField;
 
     private void Awake()
     {
-        ipField.text=ClientConfig.networkEndpoint.Address.Split(":")[0];
+        urlField.text=ClientConfig.ConnectionUrl;
         nameField.text=ClientConfig.username;
         #if !SERVER
         hostButton.gameObject.SetActive(false);
@@ -22,17 +21,18 @@ public class MainMenu : MonoBehaviour
     }
 
 
-    public void SetIP(string ip)
+    public void SetUrl(string url)
     {
-        if(!NetworkEndpoint.TryParse(ip,ClientConfig.networkEndpoint.Port,out NetworkEndpoint endpoint))
-        {
-            playButton.interactable=false;
-        }
-        else
-        {
-            ClientConfig.networkEndpoint=endpoint;
-            playButton.interactable=true;
-        }
+        ClientConfig.ConnectionUrl=url;
+        // if(!NetworkEndpoint.TryParse(url,ClientConfig.networkEndpoint.Port,out NetworkEndpoint endpoint))
+        // {
+        //     playButton.interactable=false;
+        // }
+        // else
+        // {
+        //     ClientConfig.networkEndpoint=endpoint;
+        //     playButton.interactable=true;
+        // }
     }
 
     public void SetName(string name)
@@ -44,7 +44,8 @@ public class MainMenu : MonoBehaviour
 #if SERVER
     public void Host()
     {
-        ClientConfig.networkEndpoint=NetworkEndpoint.LoopbackIpv4.WithPort(ClientConfig.networkEndpoint.Port);
+        // ClientConfig.networkEndpoint=NetworkEndpoint.LoopbackIpv4.WithPort(ClientConfig.networkEndpoint.Port);
+        ClientConfig.ConnectionUrl="ws://localhost:31070";
         SceneManager.LoadScene(2);
     }
 #endif

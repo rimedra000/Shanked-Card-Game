@@ -1,11 +1,11 @@
 using System;
 using System.Collections.Generic;
-using Unity.Networking.Transport;
 using UnityEngine;
 public class ServerConfig
 {
     // public static ushort port =31090;
-    public static NetworkEndpoint networkEndpoint = NetworkEndpoint.AnyIpv4.WithPort(31090);
+    // public static NetworkEndpoint networkEndpoint = NetworkEndpoint.AnyIpv4.WithPort(31090);
+    public static string HostUrl="ws://0.0.0.0:31070";
 
     public static List<string> botPaths = new();
 
@@ -19,15 +19,21 @@ public class ServerConfig
 #if UNITY_EDITOR
         botPaths.Add($"{Application.dataPath}/Scripts/Server/Bot/MoonSharp/BotScripts/TestMoonSharpScript.lua");
 #endif
-        ifArg("port", s =>
+        ifArg("hosturl", s =>
         {
-            if (ushort.TryParse(s, out var num))
-            {
-                networkEndpoint = networkEndpoint.WithPort(num);
-            }
+            HostUrl=s;
         });
+        
+        
+        // ifArg("port", s =>
+        // {
+        //     if (ushort.TryParse(s, out var num))
+        //     {
+        //         networkEndpoint = networkEndpoint.WithPort(num);
+        //     }
+        // });
 
-        ifArg($"bot", s =>
+        ifArg("bot", s =>
         {
             if(System.IO.File.Exists(s))
                 botPaths.Add(s);

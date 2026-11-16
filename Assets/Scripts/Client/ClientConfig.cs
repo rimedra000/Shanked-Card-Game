@@ -1,6 +1,4 @@
 using UnityEngine;
-using Unity.Networking.Transport;
-
 public static class ClientConfig
 {
     private static string _username = "";
@@ -31,35 +29,62 @@ public static class ClientConfig
         if(cardStruct.value==CardValue.Blank) return Resources.Load<Sprite>($"Card Art/Back/0");
         return Resources.Load<Sprite>($"Card Art/{cardStruct.value}/0");
     }
-
-    // public static ushort port =31090;
-    public static NetworkEndpoint networkEndpoint = NetworkEndpoint.LoopbackIpv4.WithPort(31090);
-
+    public static string ConnectionUrl="ws://localhost/31070/";
+    // public static string HostUrl="ws://0.0.0.0:31070";
     
-
     static ClientConfig()
     {
         if(PlayerPrefs.HasKey(usernameKey))_username=PlayerPrefs.GetString(usernameKey);
         string[] args = System.Environment.GetCommandLineArgs();
-        for (int i = 1; i < args.Length; i++)
-        {
-            string arg = args[i];
-            if(arg.StartsWith("-"))arg = arg[1..];
-            arg=arg.ToLower();
-            if (arg.StartsWith("ip"))
-            {
-                var sub = arg[3..];
-                if (NetworkEndpoint.TryParse(sub,networkEndpoint.Port,out var networkEndpoint2))
-                {
-                    networkEndpoint=networkEndpoint2;
-                }
+        
+        // ifArg("hosturl", s =>
+        // {
+        //     HostUrl=s;
+        //     // ConnectionUrl=HostUrl;
+        // });
 
-            }
-            if (arg.StartsWith("port"))
+        ifArg("url", s=>
+        {
+            ConnectionUrl=s;
+        });
+
+        // for (int i = 1; i < args.Length; i++)
+        // {
+        //     string arg = args[i];
+        //     if(arg.StartsWith("-"))arg = arg[1..];
+        //     arg=arg.ToLower();
+        //     if (arg.StartsWith("url"))
+        //     {
+        //         var sub = arg[3..];    
+        //         ConnectionUrl=arg;
+        //     }
+            
+        // }
+
+        
+
+        void ifArg(string cond, System.Action<string> action)
+        {
+            for (int argIndex = 1; argIndex < args.Length; argIndex++)
             {
-                var sub = arg[5..];
-                if(ushort.TryParse(sub,out var num))networkEndpoint=networkEndpoint.WithPort(num);
-            }
+                string arg=args[argIndex];
+                if(arg.StartsWith("-"))arg = arg[1..];
+                string argLower=arg.ToLower();
+                if (argLower.StartsWith(cond))
+                {
+                    if (arg.Length>=cond.Length+2&&(arg[cond.Length] == ':' || arg[cond.Length] == '='))
+                    {
+                        action(arg[(cond.Length+1)..]);
+                    }
+                    else if (arg.Length == cond.Length)
+                    {
+                        argIndex++;
+                        if(argIndex<args.Length)
+                            action(args[argIndex]);
+                    }
+                    break;
+                }    
+            }   
         }
 
     }
