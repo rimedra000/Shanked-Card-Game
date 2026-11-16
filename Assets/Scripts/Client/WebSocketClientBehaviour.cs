@@ -16,21 +16,21 @@ public class WebSocketClientBehaviour : MonoBehaviour
 
     public event EventHandler<Data> onDataReceived;
 
-    Queue<Data> dataQueue=new();
+    Queue<Data> dataQueue = new();
 
-    private void Awake() {
-        instance=this;
+    private void Awake()
+    {
+        instance = this;
     }
 
     private void Start()
     {
         Debug.Log("client start");
-        wsClient = new(ClientConfig.ConnectionUrl);
-        wsClient.OnMessage += (_,e) => {dataQueue.Enqueue(new Data(e.RawData)); };
-        wsClient.OnClose += (_,_) => {UnityEngine.SceneManagement.SceneManager.LoadScene(0);};
-        byte[] name = System.Text.Encoding.UTF8.GetBytes(ClientConfig.username);
+        wsClient = new(ClientConfig.ConnectionUrl.ToString());
+        wsClient.OnMessage += (_, e) => { dataQueue.Enqueue(new Data(e.RawData)); };
+        wsClient.OnClose += (_, _) => { UnityEngine.SceneManagement.SceneManager.LoadScene(0); };
+        wsClient.OnOpen += (_, _) => { byte[] name = System.Text.Encoding.UTF8.GetBytes(ClientConfig.username); wsClient.Send(name); };
         wsClient.Connect();
-        wsClient.Send(name);
     }
 
     void OnDestroy()
@@ -40,9 +40,9 @@ public class WebSocketClientBehaviour : MonoBehaviour
 
     void Update()
     {
-        while(dataQueue.Count>0)
+        while (dataQueue.Count > 0)
         {
-            onDataReceived.Invoke(this,dataQueue.Dequeue());
+            onDataReceived.Invoke(this, dataQueue.Dequeue());
         }
     }
 
@@ -74,7 +74,7 @@ public class WebSocketClientBehaviour : MonoBehaviour
     private static extern void WebSocketSend(byte[] array, int size);
 
     void Start() {
-        OpenWebSocket("ws://localhost:31070",JSMessageCallBack,JSOpenCallback);
+        OpenWebSocket(ClientConfig.ConnectionUrl.ToString(),JSMessageCallBack,JSOpenCallback);
     }
 
     void OnDestroy()

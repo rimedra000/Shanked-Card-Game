@@ -1,3 +1,4 @@
+using System;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -13,7 +14,7 @@ public class MainMenu : MonoBehaviour
 
     private void Awake()
     {
-        urlField.text=ClientConfig.ConnectionUrl;
+        urlField.text=ClientConfig.ConnectionUrl.ToString();
         nameField.text=ClientConfig.username;
         #if !SERVER
         hostButton.gameObject.SetActive(false);
@@ -23,7 +24,16 @@ public class MainMenu : MonoBehaviour
 
     public void SetUrl(string url)
     {
-        ClientConfig.ConnectionUrl=url;
+        if (Uri.TryCreate(url, UriKind.Absolute, out Uri result) && (result.Scheme == "ws" || result.Scheme == "wss"))
+        {
+            ClientConfig.ConnectionUrl=result;    
+            playButton.interactable=true;
+        }
+        else
+        {
+            playButton.interactable=false;
+        }
+        
         // if(!NetworkEndpoint.TryParse(url,ClientConfig.networkEndpoint.Port,out NetworkEndpoint endpoint))
         // {
         //     playButton.interactable=false;
@@ -31,7 +41,7 @@ public class MainMenu : MonoBehaviour
         // else
         // {
         //     ClientConfig.networkEndpoint=endpoint;
-        //     playButton.interactable=true;
+        
         // }
     }
 
@@ -45,7 +55,7 @@ public class MainMenu : MonoBehaviour
     public void Host()
     {
         // ClientConfig.networkEndpoint=NetworkEndpoint.LoopbackIpv4.WithPort(ClientConfig.networkEndpoint.Port);
-        ClientConfig.ConnectionUrl="ws://localhost:31070";
+        ClientConfig.ConnectionUrl=new("ws://localhost:" + ClientConfig.HostUrl.Port.ToString() + ClientConfig.HostUrl.AbsolutePath);
         SceneManager.LoadScene(2);
     }
 #endif

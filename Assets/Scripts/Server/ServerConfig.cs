@@ -5,7 +5,7 @@ public class ServerConfig
 {
     // public static ushort port =31090;
     // public static NetworkEndpoint networkEndpoint = NetworkEndpoint.AnyIpv4.WithPort(31090);
-    public static string HostUrl="ws://0.0.0.0:31070";
+    public static Uri HostUrl=new("ws://0.0.0.0:31070");
 
     public static List<string> botPaths = new();
 
@@ -21,7 +21,10 @@ public class ServerConfig
 #endif
         ifArg("hosturl", s =>
         {
-            HostUrl=s;
+            if (Uri.TryCreate(s, UriKind.Absolute, out Uri result) && (result.Scheme == "ws" || result.Scheme == "wss"))
+            {
+                HostUrl=result;    
+            }
         });
         
         

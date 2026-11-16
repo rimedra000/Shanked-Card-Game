@@ -23,8 +23,8 @@ public class WebSocketServerBehaviour : MonoBehaviour, IServerSender
     {
         serverSimulation = new(this);
         Debug.Log("Server start.");
-        wsServer = new WebSocketServer(ServerConfig.HostUrl);
-        wsServer.AddWebSocketService<CardGameService>("/", s => { s.idList = idList; s.serverSimulation = serverSimulation; });
+        wsServer = new WebSocketServer(ServerConfig.HostUrl.GetLeftPart(System.UriPartial.Authority));
+        wsServer.AddWebSocketService<CardGameService>(ServerConfig.HostUrl.AbsolutePath, s => { s.idList = idList; s.serverSimulation = serverSimulation; });
         wsServer.Start();
     }
 
@@ -42,7 +42,7 @@ public class WebSocketServerBehaviour : MonoBehaviour, IServerSender
     public void SendData(Data data, int id)
     {
         // Debug.Log($"sending({data}) to {id}({idList[id]})");
-        wsServer.WebSocketServices["/"].Sessions.SendTo(data.bytes, idList[id]);
+        wsServer.WebSocketServices[ServerConfig.HostUrl.AbsolutePath].Sessions.SendTo(data.bytes, idList[id]);
     }
 
     public void EndGame()
