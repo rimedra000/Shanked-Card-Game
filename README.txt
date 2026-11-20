@@ -35,7 +35,7 @@ game rules:
 
 
 build dep: 
-    Unity 6000.3.19f1
+    Unity 6000.3.28f1
 
     MoonSharp (https://github.com/moonsharp-devs/moonsharp)
             org.moonsharp.moonsharp (3.0.0-beta.1)
