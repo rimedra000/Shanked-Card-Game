@@ -34,9 +34,9 @@ game rules:
 
 
 
-build dep: 
+dependencies: 
     Unity 6000.3.28f1
-
     MoonSharp (https://github.com/moonsharp-devs/moonsharp)
             org.moonsharp.moonsharp (3.0.0-beta.1)
             org.moonsharp.debugger.vscode (3.0.0-beta.1)
+    websocket-sharp fork (https://github.com/aevien/websocket-sharp/releases/tag/v1.3.1)
