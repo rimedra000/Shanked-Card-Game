@@ -4,7 +4,7 @@ var LibraryWebsocket = {
         callback: null,
     },
 
-    OpenWebSocket : function (utf8str,callback,openCallBack) {
+    OpenWebSocket : function (utf8str,callback,openCallBack,closeCallBack) {
         var str = UTF8ToString(utf8str);
         WebSocketClient.callback=callback
         WebSocketClient.s = new WebSocket(str);
@@ -18,7 +18,9 @@ var LibraryWebsocket = {
         WebSocketClient.s.onopen= () => { 
             {{{ makeDynCall('v','openCallBack')}}}()
         };
-        
+        WebSocketClient.s.onclose= () => { 
+            {{{ makeDynCall('v','closeCallBack')}}}()
+        };
     },
 
     CloseWebSocket : function () {

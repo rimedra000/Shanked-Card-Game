@@ -31,13 +31,24 @@ public static class ClientConfig
         return Resources.Load<Sprite>($"Card Art/{cardStruct.value}/0");
     }
     public static Uri ConnectionUrl = new("ws://localhost:31070/");
+#if SERVER
     public static Uri HostUrl = new("ws://0.0.0.0:31070");
-
+#endif
     static ClientConfig()
     {
         if (PlayerPrefs.HasKey(usernameKey)) _username = PlayerPrefs.GetString(usernameKey);
-        string[] args = Environment.GetCommandLineArgs();
-
+#if !UNITY_WEBGL || UNITY_EDITOR
+        string[] args = Environment.GetCommandLineArgs()[1..];
+#else
+        
+        string queryString = new Uri(Application.absoluteURL).Query;
+        if (queryString.Length<2)
+        {
+            return;
+        }
+        string[] args =  queryString[1..].Split('&');
+#endif
+#if SERVER
         ifArg("hosturl", s =>
         {
             if (Uri.TryCreate(s, UriKind.Absolute, out Uri result) && (result.Scheme == "ws" || result.Scheme == "wss"))
@@ -46,6 +57,7 @@ public static class ClientConfig
                 ConnectionUrl = HostUrl;
             }
         });
+#endif
 
         ifArg("url", s =>
         {
@@ -73,7 +85,7 @@ public static class ClientConfig
 
         void ifArg(string cond, System.Action<string> action)
         {
-            for (int argIndex = 1; argIndex < args.Length; argIndex++)
+            for (int argIndex = 0; argIndex < args.Length; argIndex++)
             {
                 string arg = args[argIndex];
                 if (arg.StartsWith("-")) arg = arg[1..];

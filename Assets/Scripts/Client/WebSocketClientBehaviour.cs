@@ -65,7 +65,7 @@ public class WebSocketClientBehaviour : MonoBehaviour
     public event EventHandler<Data> onDataReceived;
 
     [DllImport("__Internal")]
-    private static extern void OpenWebSocket(string str,Action<byte[], int> messageCallback,Action openCallback);
+    private static extern void OpenWebSocket(string str, Action<byte[], int> messageCallback, Action openCallback, Action closeCallback);
 
     [DllImport("__Internal")]
     private static extern void CloseWebSocket();
@@ -73,8 +73,9 @@ public class WebSocketClientBehaviour : MonoBehaviour
     [DllImport("__Internal")]
     private static extern void WebSocketSend(byte[] array, int size);
 
-    void Start() {
-        OpenWebSocket(ClientConfig.ConnectionUrl.ToString(),JSMessageCallBack,JSOpenCallback);
+    void Start()
+    {
+        OpenWebSocket(ClientConfig.ConnectionUrl.ToString(), JSMessageCallBack, JSOpenCallback, JSCloseCallback);
     }
 
     void OnDestroy()
@@ -83,25 +84,32 @@ public class WebSocketClientBehaviour : MonoBehaviour
     }
 
 
-    private void Awake() {
-        instance=this;
+    private void Awake()
+    {
+        instance = this;
     }
-    [MonoPInvokeCallback(typeof(Action<byte[],int>))]
+    [MonoPInvokeCallback(typeof(Action<byte[], int>))]
     public static void JSMessageCallBack([MarshalAs(UnmanagedType.LPArray, ArraySubType = UnmanagedType.U1, SizeParamIndex = 1)] byte[] bytes, int bytesLength)
     {
         // Debug.Log(str);
-        instance.onDataReceived.Invoke(instance,new Data(bytes));
+        instance.onDataReceived.Invoke(instance, new Data(bytes));
     }
     [MonoPInvokeCallback(typeof(Action))]
     public static void JSOpenCallback()
     {
         byte[] name = System.Text.Encoding.UTF8.GetBytes(ClientConfig.username);
-        WebSocketSend(name,name.Length);
+        WebSocketSend(name, name.Length);
+    }
+
+    [MonoPInvokeCallback(typeof(Action))]
+    public static void JSCloseCallback()
+    {
+        UnityEngine.SceneManagement.SceneManager.LoadScene(0);
     }
 
     public void sendData(Data data)
     {
-        WebSocketSend(data.bytes,data.bytes.Length);
+        WebSocketSend(data.bytes, data.bytes.Length);
         // wsClient.Send(data.bytes);
     }
 }
