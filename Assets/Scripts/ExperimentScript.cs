@@ -1,3 +1,4 @@
+#if UNITY_EDITOR
 using UnityEngine;
 
 public class ExperimentScript : MonoBehaviour
@@ -22,3 +23,4 @@ public class ExperimentScript : MonoBehaviour
         
     }
 }
+#endif

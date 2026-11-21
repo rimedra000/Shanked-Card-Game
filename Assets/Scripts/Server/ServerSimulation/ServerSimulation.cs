@@ -24,22 +24,12 @@ public partial class ServerSimulation : IServerSimulator
         public byte? connectionIndex;
         public string username = "";
         public BotHost botHost;
-
-        public bool isPlaying()
-        {
-            // if (this == null) return false;
-            if (!connected) return false;
-            bool emptyMainHand = mainHand.Count <= 0;
-            bool emptyShownCards = shownCards.Count <= 0;
-            bool emptyHiddenCards = hiddenCards.Count <= 0;
-            return !(emptyMainHand && emptyShownCards && emptyHiddenCards);
-        }
     }
 
     private List<Data> pastData = new();
 
     private Queue<GameEventData> SentGameEventDataQueue = new();
-    const int MAX_DATA_PROCESS_LOOP_COUNT = 1000;
+    private const int MAX_DATA_PROCESS_LOOP_COUNT = 1000;
 
     public ServerSimulation(IServerSender serverSender, Random random = null)
     {
@@ -113,21 +103,6 @@ public partial class ServerSimulation : IServerSimulator
         return true;
     }
 
-    private bool AddBot(BotHost botHost, byte id)
-    {
-        string username;
-        try
-        {
-            username = botHost.GetUsername();
-        }
-        catch (Exception e)
-        {
-            ServerConfig.DebugLog(e.ToString());
-            return false;
-        }
-        AddPlayer(id, username, botHost: botHost);
-        return true;
-    }
 
     private void AddPlayer(byte id, string username, byte? connectionId = null, BotHost botHost = null)
     {
@@ -162,7 +137,7 @@ public partial class ServerSimulation : IServerSimulator
 
     private void initBots()
     {
-        Action<GameEventData,byte> SendDataCallback = (data, id) =>
+        Action<GameEventData, byte> SendDataCallback = (data, id) =>
         {
             if (data.player == id)
             {
@@ -195,7 +170,23 @@ public partial class ServerSimulation : IServerSimulator
         }
     }
 
-    bool trygetstringfrombytes(byte[] bytes, out string output)
+    private bool AddBot(BotHost botHost, byte id)
+    {
+        string username;
+        try
+        {
+            username = botHost.GetUsername();
+        }
+        catch (Exception e)
+        {
+            ServerConfig.DebugLog(e.ToString());
+            return false;
+        }
+        AddPlayer(id, username, botHost: botHost);
+        return true;
+    }
+
+    private static bool trygetstringfrombytes(byte[] bytes, out string output)
     {
         var encoding = new UTF8Encoding(false, true);
         try
@@ -210,7 +201,7 @@ public partial class ServerSimulation : IServerSimulator
         return true;
     }
 
-    private bool isPrivateData(Data data, byte player)
+    private static bool isPrivateData(Data data, byte player)
     {
         if (data.isGameEventData())
         {
@@ -249,7 +240,7 @@ public partial class ServerSimulation : IServerSimulator
         pastData.Add(data);
     }
 
-    private Data CensorData(Data data)
+    private static Data CensorData(Data data)
     {
         if (data.isGameEventData())
         {
@@ -260,7 +251,7 @@ public partial class ServerSimulation : IServerSimulator
             return data;
         }
     }
-    private GameEventData CensorData(GameEventData data)
+    private static GameEventData CensorData(GameEventData data)
     {
         CardStruct[] censoredCards = new CardStruct[data.cards.Length];
         for (int i = 0; i < data.cards.Length; i++)
@@ -274,7 +265,7 @@ public partial class ServerSimulation : IServerSimulator
         {
             GameEventData gameEventData = data.GetGameEventData();
             Player player = players[gameEventData.player];
-            if (player!=null && player.connectionIndex == connectionId)
+            if (player != null && player.connectionIndex == connectionId)
             {
                 SentGameEventDataQueue.Enqueue(gameEventData);
             }
@@ -314,7 +305,7 @@ public partial class ServerSimulation : IServerSimulator
             };
         }
         return false;
-        
+
     }
 
     private void RemovePlayer(byte id)
@@ -353,12 +344,23 @@ public partial class ServerSimulation : IServerSimulator
 
     private static bool isPlaying(Player player)
     {
-        return player?.isPlaying() ?? false;
+        if (player == null)
+        {
+            return false;
+        }
+        else
+        {
+            if (!player.connected) return false;
+            if(player.mainHand.Count <= 0) return true;
+            if(player.shownCards.Count <= 0) return true;
+            if(player.hiddenCards.Count <= 0) return true;
+            return false;
+        }
     }
 
 
 
-    public Data NewConnection(byte connectionId, byte[] bytes)
+    public Data? NewConnection(byte connectionId, byte[] bytes)
     {
         if (trygetstringfrombytes(bytes, out var username))
         {
@@ -384,7 +386,7 @@ public partial class ServerSimulation : IServerSimulator
             }
         }
 
-        return new OtherEventData(connectionId, OtherEvent.AddPlayer);
+        return null;
     }
 
     public void PlayerDisconnect(byte id)
@@ -410,8 +412,6 @@ public partial class ServerSimulation : IServerSimulator
         if (turn == playerIndex && !isSetupTime) StartTurn();
         return;
     }
-
-    public bool GameStarted() => !isSetupTime;
 
     public void SendData(Data data, byte id)
     {
@@ -451,14 +451,14 @@ public partial class ServerSimulation : IServerSimulator
         {
             GameEventData data = SentGameEventDataQueue.Dequeue();
             bool result = ProcessGameEventData(data);
-            if(result) continue;
+            if (result) continue;
             Player player = players[data.player];
             if (!result && player.botHost != null)
             {
                 RemovePlayer(data.player);
             }
 
-            
+
         }
     }
 }

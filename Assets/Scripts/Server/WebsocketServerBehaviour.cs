@@ -67,8 +67,16 @@ class CardGameService : WebSocketBehavior
         else
         {
             simConnected = true;
-            Data data = serverSimulation.NewConnection((byte)idList.IndexOf(ID), e.RawData);
-            Send(data.bytes);
+            Data? data = serverSimulation.NewConnection((byte)idList.IndexOf(ID), e.RawData);
+            if (data.HasValue)
+            {
+                Send(data.Value.bytes);    
+            }
+            else
+            {
+                Close();
+            }
+            
         }
     }
     protected override void OnClose(CloseEventArgs e)
